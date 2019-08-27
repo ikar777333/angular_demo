@@ -6,9 +6,12 @@ import { TreeComponent } from "./tree/tree.component";
 
 
 const routes: Routes = [
-  {path: "", component: HomeComponent},
-  {path: "diagram", component: DiagramComponent},
-  {path: "tree", component: TreeComponent}
+  {path: "", component: HomeComponent,
+  children: [
+    { path: "", redirectTo: "diagram", pathMatch: "full" },
+    { path: "diagram", component: DiagramComponent},
+    { path: "tree", component: TreeComponent}
+  ]},
 ];
 
 @NgModule({

@@ -9,6 +9,8 @@ import {
   MatListModule,
   MatGridListModule,
   MatMenuModule,
+  MatCardModule,
+  MatButtonModule,
 } from '@angular/material';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -34,6 +36,8 @@ import { TreeComponent } from './tree/tree.component';
     MatListModule,
     MatGridListModule,
     MatMenuModule,
+    MatCardModule,
+    MatButtonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
