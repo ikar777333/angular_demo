@@ -13,10 +13,10 @@ import {
   MatButtonModule,
 } from '@angular/material';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { NavComponent } from './nav/nav.component';
+import { HomeComponent } from './components/home/home.component';
+import { NavComponent } from './components/nav/nav.component';
 import { DiagramComponent } from './diagram/diagram.component';
-import { TreeComponent } from './tree/tree.component';
+import { TreeComponent } from './components/tree/tree.component';
 
 @NgModule({
   declarations: [
