@@ -39,7 +39,7 @@ export const getSelected = createSelector(
     fromLoads.getSelected,
 );
 
-export const getSelectedFilm = createSelector(
+export const getSelectedLoad = createSelector(
     getSelected,
     getLoads,
     (selectedId, loads) => {
@@ -49,7 +49,7 @@ export const getSelectedFilm = createSelector(
     }
 );
 
-export const getAllloads = createSelector(
+export const getAllLoads = createSelector(
     getIds,
     getLoads,
     (ids, loads) => {

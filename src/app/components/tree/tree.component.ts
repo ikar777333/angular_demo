@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store'
+
+import { Load } from "../../models/Load";
+import * as fromRoot from '../../store/reducers';
 
 @Component({
   selector: 'app-tree',
@@ -7,9 +12,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TreeComponent implements OnInit {
 
-  constructor() { }
+  selected$: Observable<any>;
+  dataSource: Observable<any>;
+  displayedColumns: string[] = ['id', 'name', 'description'];
+
+  constructor(private store: Store<fromRoot.State>) { 
+    this.dataSource = store.select(fromRoot.getAllLoads);
+    var a = store.select(fromRoot.getAllLoads);
+    a.forEach(function(element){
+      console.log(element)
+    })
+  }
 
   ngOnInit() {
+    
   }
 
 }

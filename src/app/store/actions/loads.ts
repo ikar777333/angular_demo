@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Load } from '../../models/Load';
-
+ 
 export const SELECT = '[Loads] Select';
 export const ADD_ONE = '[Loads] Add One';
 
