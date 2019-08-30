@@ -1,6 +1,8 @@
 export interface Load {    
-  id: number;    
-  name: string;    
-  loads: Array<Load>;    
+  name: string;
+  position: number;
+  weight: number;
+  symbol: string;
   description: string;
+  tableNumber: number;
 }
