@@ -1,8 +1,5 @@
-export interface Load {    
+export interface Load {  
+  id: number;  
   name: string;
-  position: number;
-  weight: number;
-  symbol: string;
   description: string;
-  tableNumber: number;
 }

@@ -1,68 +1,46 @@
-import { Component, OnInit, OnChanges, ChangeDetectorRef } from '@angular/core';
+import {Component, ViewChild, OnInit, ContentChildren, QueryList} from '@angular/core';
+import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDropList} from '@angular/cdk/drag-drop';
+import { MatTableDataSource } from '@angular/material';
+import clonedeep from 'lodash.clonedeep';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store'
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { Load } from "../../models/Load";
 import * as fromRoot from '../../store/reducers';
-
 @Component({
   selector: 'app-tree',
   templateUrl: './tree.component.html',
-  styleUrls: ['./tree.component.sass']
+  styleUrls: ['./tree.component.sass'],
 })
 export class TreeComponent implements OnInit {
-
   displayedColumns: string[] = ['id', 'name', 'description'];
-  selected$: Observable<any>;
+  ELEMENT_DATA: any;
+  ELEMENT_DATA2: Load[];
   dataSource: any;
+  dataSource2;
 
-  constructor(private store: Store<fromRoot.State>, private changeDetectorRef: ChangeDetectorRef) { 
-    this.dataSource = store.select(fromRoot.getAllLoads);
+  constructor(private store: Store<fromRoot.State>) { 
+    this.ELEMENT_DATA = store.select(fromRoot.getAllLoads);
     var a = store.select(fromRoot.getAllLoads);
-    a.forEach(function(element){
-      console.log(element)
-    })
-  }
-
-  ngOnChanges() {
-    this.populateDataSource(this.dataSource);
-  }
-
-
-  public getTableList(tableNumber: number): Load[] {
-    return this.dataSource.filter(x => x.tableNumber === tableNumber);
-  }
-
-  public onDrop(table: number, dropResult: CdkDragDrop<Load[]>) {
-    console.log('on drop');
-    const data = <Load> dropResult.item.data;
-    const previousTable = data.tableNumber;
-    if (table === data.tableNumber && dropResult.currentIndex === dropResult.previousIndex) {
-      return;
-    } else {
-      data.tableNumber = table;
-    }
-    this.populateDataSource(this.dataSource);
-  }
-
-  // pretend newData is coming from 
-  // an http service
-  public populateDataSource(data): void {
-    const newData = [];
-    this.dataSource.forEach(element => {
-      const tableItem = Object.assign({}, element);
-      newData.push(tableItem);
-    });
-    this.dataSource =[];
-    newData.forEach(item => {
-      this.dataSource.push(item);
-    });
-    this.changeDetectorRef.detectChanges();
   }
 
   ngOnInit() {
-    
+    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+    this.dataSource2 = new MatTableDataSource(this.ELEMENT_DATA2);
   }
 
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+    }
+
+    // updates moved data and table, but not dynamic if more dropzones
+    this.dataSource.data = clonedeep(this.dataSource.data);
+    this.dataSource2.data = clonedeep(this.dataSource2.data);
+  }
 }

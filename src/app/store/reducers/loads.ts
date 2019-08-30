@@ -13,17 +13,14 @@ export const initialState: State = {
   loads: {
     1: {
       id: 1, name: 'test1',
-      loads: [],
-      description: 'test1',           
+      description: 'test1',          
       },
     2: {
         id: 2, name: 'test2',
-        loads: [],
-        description: 'test2',   
+        description: 'test2',    
       },
     3: {
         id: 3, name: 'test3',
-        loads: [],
         description: 'test3',   
       },
     },
