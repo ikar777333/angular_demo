@@ -21,38 +21,10 @@ export function logger(reducer: ActionReducer<State>):
 }
 export const metaReducers: MetaReducer<State>[] = [logger];
 
-export const getLoadstate = 
+export const getLoadState = 
     createFeatureSelector<fromLoads.State>('loads');
 
-export const getIds = createSelector(
-    getLoadstate,
-    fromLoads.getIds,
-);
-
-export const getLoads = createSelector(
-    getLoadstate,
-    fromLoads.getLoads,
-);
-
-export const getSelected = createSelector(
-    getLoadstate,
-    fromLoads.getSelected,
-);
-
-export const getSelectedLoad = createSelector(
-    getSelected,
-    getLoads,
-    (selectedId, loads) => {
-        return {
-            ...loads[selectedId]
-        };
-    }
-);
-
 export const getAllLoads = createSelector(
-    getIds,
-    getLoads,
-    (ids, loads) => {
-        return ids.map(id => loads[id]);
-    }
+    getLoadState,
+    fromLoads.getLoads,
 );

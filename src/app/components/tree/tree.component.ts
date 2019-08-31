@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store'
 
 import { Load } from "../../models/Load";
 import * as fromRoot from '../../store/reducers';
+
 @Component({
   selector: 'app-tree',
   templateUrl: './tree.component.html',
@@ -14,19 +15,19 @@ import * as fromRoot from '../../store/reducers';
 })
 export class TreeComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'description'];
-  ELEMENT_DATA: any;
-  ELEMENT_DATA2: Load[];
-  dataSource: any;
-  dataSource2;
+  list:   Observable<Array<Load>>;
+  list2:  Observable<Array<Load>>;
+  dataSource = new MatTableDataSource();
+  dataSource2 = new MatTableDataSource();
 
   constructor(private store: Store<fromRoot.State>) { 
-    this.ELEMENT_DATA = store.select(fromRoot.getAllLoads);
-    var a = store.select(fromRoot.getAllLoads);
+    this.list = store.select(fromRoot.getAllLoads);
+    this.list2 = store.select(fromRoot.getAllLoads);
   }
 
   ngOnInit() {
-    this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-    this.dataSource2 = new MatTableDataSource(this.ELEMENT_DATA2);
+    this.list.subscribe(data => this.dataSource.data = data);
+    this.list2.subscribe(data => this.dataSource2.data = data);
   }
 
   drop(event: CdkDragDrop<string[]>) {
