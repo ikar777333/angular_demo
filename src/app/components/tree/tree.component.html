@@ -1,3 +1,4 @@
+<hr>
 <mat-table [dataSource]="dataSource"
   class="mat-elevation-z8" cdkDropList #table1 #list1="cdkDropList"
   [cdkDropListData]="dataSource.data" [cdkDropListConnectedTo]="[list2]"
@@ -34,22 +35,16 @@
   cdkDropList #table2 #list2="cdkDropList" [cdkDropListData]="dataSource2.data"
   [cdkDropListConnectedTo]="[list1]" (cdkDropListDropped)="drop($event)" id="table2">
 
-  <!--- Note that these columns can be defined in any order.
-        The actual rendered columns are set as a property on the row definition" -->
-
-  <!-- Position Column -->
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
   </ng-container>
 
-  <!-- Name Column -->
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
   </ng-container>
 
-  <!-- Weight Column -->
   <ng-container matColumnDef="description">
     <mat-header-cell *matHeaderCellDef> description </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>

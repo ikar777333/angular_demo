@@ -24,7 +24,12 @@ export const metaReducers: MetaReducer<State>[] = [logger];
 export const getLoadState = 
     createFeatureSelector<fromLoads.State>('loads');
 
-export const getAllLoads = createSelector(
+export const getAllLoads1 = createSelector(
     getLoadState,
-    fromLoads.getLoads,
+    fromLoads.getLoads1,
+);
+
+export const getAllLoads2 = createSelector(
+    getLoadState,
+    fromLoads.getLoads2,
 );

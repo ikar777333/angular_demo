@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store'
 
 import { Load } from "../../models/Load";
 import * as fromRoot from '../../store/reducers';
+import { AddOne, ChangePosition1, ChangePosition2 } from 'src/app/store/actions/loads';
 
 @Component({
   selector: 'app-tree',
@@ -21,8 +22,8 @@ export class TreeComponent implements OnInit {
   dataSource2 = new MatTableDataSource();
 
   constructor(private store: Store<fromRoot.State>) { 
-    this.list = store.select(fromRoot.getAllLoads);
-    this.list2 = store.select(fromRoot.getAllLoads);
+    this.list = store.select(fromRoot.getAllLoads1);
+    this.list2 = store.select(fromRoot.getAllLoads2);
   }
 
   ngOnInit() {
@@ -32,7 +33,8 @@ export class TreeComponent implements OnInit {
 
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex)
+      console.log(this.dataSource.data);
     } else {
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
@@ -40,8 +42,11 @@ export class TreeComponent implements OnInit {
                         event.currentIndex);
     }
 
+    
     // updates moved data and table, but not dynamic if more dropzones
     this.dataSource.data = clonedeep(this.dataSource.data);
     this.dataSource2.data = clonedeep(this.dataSource2.data);
+    this.store.dispatch(new ChangePosition1(this.dataSource.data));
+    this.store.dispatch(new ChangePosition2(this.dataSource2.data));
   }
 }
