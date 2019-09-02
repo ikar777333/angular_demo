@@ -7,12 +7,12 @@ export const ADD_ONE = '[Loads] Add One';
 
 export class ChangePosition1 implements Action {
     readonly type = CHANGE_POSITION1;
-    constructor(public payload: unknown[]) { }
+    constructor(public payload: any[]) { }
 }
 
 export class ChangePosition2 implements Action {
     readonly type = CHANGE_POSITION2;
-    constructor(public payload: unknown[]) { }
+    constructor(public payload: any[]) { }
 }
 
 export class AddOne implements Action {
