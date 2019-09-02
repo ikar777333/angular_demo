@@ -1,6 +1,5 @@
-export interface Load {    
-  id: number;    
-  name: string;    
-  loads: Array<Load>;    
+export interface Load {  
+  id: number;  
+  name: string;
   description: string;
 }
