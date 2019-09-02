@@ -11,12 +11,15 @@ export class Load {
   private purpose: LoadPurposes;
   private subPurpose: LoadSubPurposes;
   private loadType: LoadTypes;
-  private isSupply: string;
+  private isSupply: boolean;
   private parentId: number;
   private isAllocated: boolean;
   private isBusbar: boolean;
 
-	constructor($id: number, $name: string, $area: LoadAreas, $purpose: LoadPurposes, $subPurpose: LoadSubPurposes, $loadType: LoadTypes, $isSupply: string, $parentId: number, $isAllocated: boolean, $isBusbar: boolean) {
+  constructor($id: number, $name: string, $area: LoadAreas = LoadAreas.AREA1, $purpose: LoadPurposes = LoadPurposes.PURPOSE1, 
+    $subPurpose: LoadSubPurposes = LoadSubPurposes.SUB_PURPOSE1, $loadType: LoadTypes, $isSupply: boolean = false, $parentId: number, 
+    $isAllocated: boolean = false, $isBusbar: boolean = false) 
+    {
 		this.id = $id;
 		this.name = $name;
 		this.area = $area;
@@ -127,17 +130,17 @@ export class Load {
 
     /**
      * Getter $isSupply
-     * @return {string}
+     * @return {boolean}
      */
-	public get $isSupply(): string {
+	public get $isSupply(): boolean {
 		return this.isSupply;
 	}
 
     /**
      * Setter $isSupply
-     * @param {string} value
+     * @param {boolean} value
      */
-	public set $isSupply(value: string) {
+	public set $isSupply(value: boolean) {
 		this.isSupply = value;
 	}
 
