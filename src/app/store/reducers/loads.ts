@@ -2,6 +2,10 @@ import { Action } from '@ngrx/store';
 import * as loadAction from '../actions/loads';
 
 import { Load } from '../../models/Load';
+import { LoadAreas } from 'src/app/models/LoadAreas.enum';
+import { LoadPurposes } from 'src/app/models/LoadPurposes.enum';
+import { LoadSubPurposes } from 'src/app/models/LoadSubPurposes.enum';
+import { LoadTypes } from 'src/app/models/LoadTypes.enum';
 
 export interface State {
    loads1: Array<Load>,
@@ -9,31 +13,21 @@ export interface State {
 }
 
 export const initialState: State = {
-    loads1: [ {
-      id: 1, name: 'test1',
-      description: 'test1',          
-      },
-    {
-        id: 2, name: 'test2',
-        description: 'test2',    
-      },
-    {
-        id: 3, name: 'test3',
-        description: 'test3',   
-      },
+    loads1: [ 
+      new Load(1, "test1", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, 0, false),
+      new Load(2, "test2", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, 0, false),
+      new Load(3, "test3", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, 0, false),
     ],
-    loads2: [ {
-      id: 4, name: 'test1',
-      description: 'test1',          
-      },
-    {
-        id: 5, name: 'test2',
-        description: 'test2',    
-      },
-    {
-        id: 6, name: 'test3',
-        description: 'test3',   
-      },
+    loads2: [ 
+      new Load(4, "test1", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 0, false),
+      new Load(5, "test1", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 0, false),
+      new Load(6, "test1", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 0, false),
     ]
 };
 

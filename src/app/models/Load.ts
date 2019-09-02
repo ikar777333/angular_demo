@@ -5,31 +5,30 @@ import {LoadTypes} from "../models/LoadTypes.enum"
 
 export class Load { 
 
-  private id: number;  
-  private name: string;
-  private area: LoadAreas;
-  private purpose: LoadPurposes;
-  private subPurpose: LoadSubPurposes;
-  private loadType: LoadTypes;
-  private isSupply: boolean;
-  private parentId: number;
-  private isAllocated: boolean;
-  private isBusbar: boolean;
+  private id:            number;  
+  private name:          string;
+  private area:          LoadAreas;
+  private purpose:       LoadPurposes;
+  private subPurpose:    LoadSubPurposes;
+  private loadType:      LoadTypes;
+  private isSupply:      boolean;
+  private parentId:      number;
+  private isAllocated:   boolean;
+  private isBusbar:      boolean;
 
   constructor($id: number, $name: string, $area: LoadAreas = LoadAreas.AREA1, $purpose: LoadPurposes = LoadPurposes.PURPOSE1, 
-    $subPurpose: LoadSubPurposes = LoadSubPurposes.SUB_PURPOSE1, $loadType: LoadTypes, $isSupply: boolean = false, $parentId: number, 
-    $isAllocated: boolean = false, $isBusbar: boolean = false) 
+    $subPurpose: LoadSubPurposes = LoadSubPurposes.SUB_PURPOSE1, $loadType: LoadTypes, $parentId: number, $isBusbar: boolean = false) 
     {
-		this.id = $id;
-		this.name = $name;
-		this.area = $area;
-		this.purpose = $purpose;
-		this.subPurpose = $subPurpose;
-		this.loadType = $loadType;
-		this.isSupply = $isSupply;
-		this.parentId = $parentId;
-		this.isAllocated = $isAllocated;
-		this.isBusbar = $isBusbar;
+		this.id =           $id;
+		this.name =         $name;
+		this.area =         $area;
+		this.purpose =      $purpose;
+		this.subPurpose =   $subPurpose;
+		this.loadType =     $loadType;
+		this.isSupply =     $loadType === LoadTypes.TYPE1 ? true : false;
+		this.parentId =     $parentId;
+		this.isAllocated =  $parentId === 0 ? false : true;
+		this.isBusbar =     $isBusbar;
   }
   
     /**
