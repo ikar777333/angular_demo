@@ -33,3 +33,13 @@ export const getAllLoads2 = createSelector(
     getLoadState,
     fromLoads.getLoads2,
 );
+
+export const getRelatedLoads = (relatedLoad, isSupply) => createSelector(
+    getLoadState,
+    (state) => {
+        state.loads1.forEach(function(element) {
+            console.log(element + "dawd")
+        })
+        return state.loads1;
+    }
+);

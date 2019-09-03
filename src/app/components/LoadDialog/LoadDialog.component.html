@@ -1,0 +1,57 @@
+<h1 mat-dialog-title>Configuration</h1>
+<div mat-dialog-content>
+
+  <mat-form-field class="example-full-width">
+    <input matInput [(ngModel)]="data.name" placeholder="Name" value="">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Area:</mat-label>
+    <mat-select [(value)]="data.area">
+      <mat-option *ngFor="let area of areas" [value]="area">
+        {{area}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Metering purpose:</mat-label>
+    <mat-select [(value)]="data.purpose">
+      <mat-option *ngFor="let purpose of purposes" [value]="purpose">
+        {{purpose}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Submetering purpose:</mat-label>
+    <mat-select [(value)]="data.subPurpose">
+      <mat-option *ngFor="let subPurpose of subPurposes" [value]="subPurpose">
+        {{subPurpose}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Load type:</mat-label>
+    <mat-select [(value)]="data.loadType">
+      <mat-option *ngFor="let loadType of loadTypes" [value]="loadType">
+        {{loadType}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Related load:</mat-label>
+    <mat-select [(value)]="data.relatedLoad">
+      <mat-option *ngFor="let relatedLoad of relatedLoads" [value]="relatedLoad">
+        {{relatedLoad}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

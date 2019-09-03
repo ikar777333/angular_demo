@@ -1,6 +1,6 @@
 import {Component, ViewChild, OnInit, ContentChildren, QueryList} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDropList} from '@angular/cdk/drag-drop';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource, MatDialog } from '@angular/material';
 import clonedeep from 'lodash.clonedeep';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store'
@@ -8,6 +8,7 @@ import { Store } from '@ngrx/store'
 import { Load } from "../../models/Load";
 import * as fromRoot from '../../store/reducers';
 import { AddOne, ChangePosition1, ChangePosition2 } from 'src/app/store/actions/loads';
+import { LoadDialogComponent } from "../LoadDialog/LoadDialog.component"
 
 @Component({
   selector: 'app-tree',
@@ -21,9 +22,20 @@ export class TreeComponent implements OnInit {
   dataSource = new MatTableDataSource();
   dataSource2 = new MatTableDataSource();
 
-  constructor(private store: Store<fromRoot.State>) { 
+  constructor(private store: Store<fromRoot.State>, public dialog: MatDialog) { 
     this.list = store.select(fromRoot.getAllLoads1);
     this.list2 = store.select(fromRoot.getAllLoads2);
+  }
+
+  openDialog(load: Load): void {
+    const dialogRef = this.dialog.open(LoadDialogComponent, {
+      width: '30%',
+      data: load
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      
+    });
   }
 
   ngOnInit() {
@@ -34,7 +46,6 @@ export class TreeComponent implements OnInit {
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex)
-      console.log(this.dataSource.data);
     } else {
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
