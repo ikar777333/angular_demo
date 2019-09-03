@@ -27,7 +27,7 @@ export class Load {
 		this.loadType =     $loadType;
 		this.isSupply =     $loadType === LoadTypes.TYPE1 ? true : false;
 		this.parentId =     $parentId;
-		this.isAllocated =  $parentId === 0 ? false : true;
+		this.isAllocated =  $parentId === null ? false : true;
 		this.isBusbar =     $isBusbar;
   }
   
@@ -124,7 +124,8 @@ export class Load {
      * @param {LoadTypes} value
      */
 	public set $loadType(value: LoadTypes) {
-		this.loadType = value;
+          this.loadType = value;
+          this.isSupply = value === LoadTypes.TYPE1 ? true : false;
 	}
 
     /**
@@ -133,14 +134,6 @@ export class Load {
      */
 	public get $isSupply(): boolean {
 		return this.isSupply;
-	}
-
-    /**
-     * Setter $isSupply
-     * @param {boolean} value
-     */
-	public set $isSupply(value: boolean) {
-		this.isSupply = value;
 	}
 
     /**
@@ -156,7 +149,8 @@ export class Load {
      * @param {number} value
      */
 	public set $parentId(value: number) {
-		this.parentId = value;
+          this.parentId = value;
+          this.isAllocated = value === null ? false : true;
 	}
 
     /**
@@ -165,14 +159,6 @@ export class Load {
      */
 	public get $isAllocated(): boolean {
 		return this.isAllocated;
-	}
-
-    /**
-     * Setter $isAllocated
-     * @param {boolean} value
-     */
-	public set $isAllocated(value: boolean) {
-		this.isAllocated = value;
 	}
 
     /**

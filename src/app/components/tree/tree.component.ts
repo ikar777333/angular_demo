@@ -15,7 +15,7 @@ import { AddOne, ChangePosition1, ChangePosition2 } from 'src/app/store/actions/
   styleUrls: ['./tree.component.sass'],
 })
 export class TreeComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'name', 'description'];
+  displayedColumns: string[] = ['id', 'name', 'area', 'loadType'];
   list:   Observable<Array<Load>>;
   list2:  Observable<Array<Load>>;
   dataSource = new MatTableDataSource();
