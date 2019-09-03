@@ -40,11 +40,11 @@ export const getRelatedLoads = (load: Load) => createSelector(
     (state) => {
         if(load.$isSupply) {
             return state.loads2.filter(function(element) {
-                element.$isBusbar !== true;
+                //element.$isBusbar !== true;
             })
         } else {
             return state.loads2.filter(function(element) {
-                element.$id !== load.$id;
+                return element.$id !== load.$id;
             })
         }
     }

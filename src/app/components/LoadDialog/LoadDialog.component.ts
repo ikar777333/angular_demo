@@ -20,7 +20,7 @@ export class LoadDialogComponent implements OnInit {
   purposes =    Object.values(LoadPurposes);
   subPurposes = Object.values(LoadSubPurposes);
   loadTypes =   Object.values(LoadTypes);
-  relatedLoads: Observable<Array<Load>>;
+  relatedLoads: Array<Load>;
 
   constructor(
     private store: Store<fromRoot.State>, 
@@ -33,7 +33,10 @@ export class LoadDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.relatedLoads = this.store.select(fromRoot.getRelatedLoads(this.data));
+    console.log(this.data);
+    this.store.select(fromRoot.getRelatedLoads(this.data))
+      .subscribe(data => this.relatedLoads = data);
+    console.log(this.relatedLoads);
   }
 
 }

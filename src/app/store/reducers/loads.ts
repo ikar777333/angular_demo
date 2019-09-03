@@ -23,11 +23,11 @@ export const initialState: State = {
     ],
     loads2: [ 
       new Load(4, "test4", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
-        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, null, true),
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, null, true),
       new Load(5, "test5", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
-        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 4, false),
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, 4, false),
       new Load(6, "test6", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
-        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 5, false),
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, 5, false),
     ]
 };
 

@@ -25,7 +25,7 @@ export class Load {
 		this.purpose =      $purpose;
 		this.subPurpose =   $subPurpose;
 		this.loadType =     $loadType;
-		this.isSupply =     $loadType === LoadTypes.TYPE1 ? true : false;
+		this.isSupply =     $loadType === LoadTypes.TYPE2 ? true : false;
 		this.parentId =     $parentId;
 		this.isAllocated =  $parentId === null ? false : true;
 		this.isBusbar =     $isBusbar;
@@ -125,7 +125,7 @@ export class Load {
      */
 	public set $loadType(value: LoadTypes) {
           this.loadType = value;
-          this.isSupply = value === LoadTypes.TYPE1 ? true : false;
+          this.isSupply = value === LoadTypes.TYPE2 ? true : false;
 	}
 
     /**
