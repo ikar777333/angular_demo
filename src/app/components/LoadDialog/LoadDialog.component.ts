@@ -33,6 +33,7 @@ export class LoadDialogComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.relatedLoads = this.store.select(fromRoot.getRelatedLoads(this.data));
   }
 
 }

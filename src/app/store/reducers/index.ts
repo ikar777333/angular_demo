@@ -2,6 +2,7 @@ import { ActionReducerMap, createSelector, createFeatureSelector,
     ActionReducer, MetaReducer } from '@ngrx/store';
 
 import * as fromLoads from './loads';
+import { Load } from '../../models/Load'
 
 export interface State {
     loads: fromLoads.State;
@@ -34,12 +35,17 @@ export const getAllLoads2 = createSelector(
     fromLoads.getLoads2,
 );
 
-export const getRelatedLoads = (relatedLoad, isSupply) => createSelector(
+export const getRelatedLoads = (load: Load) => createSelector(
     getLoadState,
     (state) => {
-        state.loads1.forEach(function(element) {
-            console.log(element + "dawd")
-        })
-        return state.loads1;
+        if(load.$isSupply) {
+            return state.loads2.filter(function(element) {
+                element.$isBusbar !== true;
+            })
+        } else {
+            return state.loads2.filter(function(element) {
+                element.$id !== load.$id;
+            })
+        }
     }
 );

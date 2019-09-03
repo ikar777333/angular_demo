@@ -15,19 +15,19 @@ export interface State {
 export const initialState: State = {
     loads1: [ 
       new Load(1, "test1", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
-        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, 0, false),
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, null, false),
       new Load(2, "test2", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
-        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, 0, false),
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, null, false),
       new Load(3, "test3", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
-        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, 0, false),
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, null, false),
     ],
     loads2: [ 
-      new Load(4, "test1", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
-        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 0, false),
-      new Load(5, "test1", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
-        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 0, false),
-      new Load(6, "test1", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
-        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 0, false),
+      new Load(4, "test4", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, null, true),
+      new Load(5, "test5", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 4, false),
+      new Load(6, "test6", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 5, false),
     ]
 };
 
