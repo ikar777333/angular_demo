@@ -2,12 +2,12 @@
 <div mat-dialog-content>
 
   <mat-form-field class="example-full-width">
-    <input matInput [(ngModel)]="data.name" placeholder="Name" value="">
+    <input matInput [(ngModel)]="form.name" placeholder="Name" value="">
   </mat-form-field>
 
   <mat-form-field>
     <mat-label>Area:</mat-label>
-    <mat-select [(value)]="data.area">
+    <mat-select [(value)]="form.area">
       <mat-option *ngFor="let area of areas" [value]="area">
         {{area}}
       </mat-option>
@@ -16,7 +16,7 @@
 
   <mat-form-field>
     <mat-label>Metering purpose:</mat-label>
-    <mat-select [(value)]="data.purpose">
+    <mat-select [(value)]="form.purpose">
       <mat-option *ngFor="let purpose of purposes" [value]="purpose">
         {{purpose}}
       </mat-option>
@@ -25,7 +25,7 @@
 
   <mat-form-field>
     <mat-label>Submetering purpose:</mat-label>
-    <mat-select [(value)]="data.subPurpose">
+    <mat-select [(value)]="form.subPurpose">
       <mat-option *ngFor="let subPurpose of subPurposes" [value]="subPurpose">
         {{subPurpose}}
       </mat-option>
@@ -34,7 +34,7 @@
 
   <mat-form-field>
     <mat-label>Load type:</mat-label>
-    <mat-select  (change)="changeSuit($event)" [(value)]="data.loadType">
+    <mat-select (selectionChange)="onChange()" [(value)]="form.loadType">
       <mat-option *ngFor="let loadType of loadTypes" [value]="loadType">
         {{loadType}}
       </mat-option>
@@ -43,12 +43,14 @@
 
   <mat-form-field>
     <mat-label>Related load:</mat-label>
-    <mat-select [(value)]="data.relatedLoad">
+    <mat-select [(value)]="form.relatedLoad">
       <mat-option *ngFor="let relatedLoad of relatedLoads" [value]="relatedLoad">
         {{relatedLoad}}
       </mat-option>
     </mat-select>
   </mat-form-field>
+
+  <button mat-button (click)="onClick()">Click me!</button>
 
 </div>
 <div mat-dialog-actions>

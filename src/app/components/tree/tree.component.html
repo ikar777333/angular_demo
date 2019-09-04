@@ -1,7 +1,8 @@
-<hr>
+<br>
+
 <mat-table [dataSource]="dataSource"
   class="mat-elevation-z8" cdkDropList #table1 #list1="cdkDropList"
-  [cdkDropListData]="dataSource.data" [cdkDropListConnectedTo]="[list2]"
+  [cdkDropListData]="dataSource.data" [cdkDropListConnectedTo]="[list2 , list3]"
   (cdkDropListDropped)="drop($event)" id="table1">
 
     <ng-container matColumnDef="id">
@@ -28,11 +29,41 @@
   <mat-row (click)="openDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
 </mat-table>
 
-<hr>
+<br>
 
 <mat-table [dataSource]="dataSource2" class="mat-elevation-z8"
   cdkDropList #table2 #list2="cdkDropList" [cdkDropListData]="dataSource2.data"
-  [cdkDropListConnectedTo]="[list1]" (cdkDropListDropped)="drop($event)" id="table2">
+  [cdkDropListConnectedTo]="[list1, list3]" (cdkDropListDropped)="drop($event)" id="table2">
+
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="area">
+    <mat-header-cell *matHeaderCellDef> area </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.area}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="loadType">
+  <mat-header-cell *matHeaderCellDef> loadType </mat-header-cell>
+  <mat-cell *matCellDef="let element"> {{element.loadType}} </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row (click)="openDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
+</mat-table>
+
+<br>
+
+<mat-table [dataSource]="dataSource3" class="mat-elevation-z8"
+  cdkDropList #table3 #list3="cdkDropList" [cdkDropListData]="dataSource3.data"
+  [cdkDropListConnectedTo]="[list1, list2]" (cdkDropListDropped)="drop($event)" id="table3">
 
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
