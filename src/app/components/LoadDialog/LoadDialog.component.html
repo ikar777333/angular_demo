@@ -34,7 +34,7 @@
 
   <mat-form-field>
     <mat-label>Load type:</mat-label>
-    <mat-select [(value)]="data.loadType">
+    <mat-select  (change)="changeSuit($event)" [(value)]="data.loadType">
       <mat-option *ngFor="let loadType of loadTypes" [value]="loadType">
         {{loadType}}
       </mat-option>

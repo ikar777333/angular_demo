@@ -32,11 +32,13 @@ export class LoadDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  changeSuit(e) {
+    console.log(e)
+  }
+
   ngOnInit() {
-    console.log(this.data);
     this.store.select(fromRoot.getRelatedLoads(this.data.$isSupply, this.data.$id))
       .subscribe(data => this.relatedLoads = data);
-    console.log(this.relatedLoads);
   }
 
 }
