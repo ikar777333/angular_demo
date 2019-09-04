@@ -10,6 +10,7 @@ import { LoadTypes } from 'src/app/models/LoadTypes.enum';
 export interface State {
    loads1: Array<Load>,
    loads2: Array<Load>,
+   loads3: Array<Load>,
 }
 
 export const initialState: State = {
@@ -28,6 +29,14 @@ export const initialState: State = {
         LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, 4, false),
       new Load(6, "test6", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
         LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, 5, false),
+    ],
+    loads3: [
+      new Load(7, "test7", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 4, false),
+      new Load(8, "test8", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 4, false),
+      new Load(9, "test9", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE2, 4, false),
     ]
 };
 

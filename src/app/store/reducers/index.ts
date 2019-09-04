@@ -35,17 +35,21 @@ export const getAllLoads2 = createSelector(
     fromLoads.getLoads2,
 );
 
-export const getRelatedLoads = (load: Load) => createSelector(
+export const getRelatedLoads = (isSupply: boolean, id: number) => createSelector(
     getLoadState,
     (state) => {
-        if(load.$isSupply) {
-            return state.loads2.filter(function(element) {
-                //element.$isBusbar !== true;
+        let loads: Array<Load>;
+        if(isSupply) {
+            loads = state.loads2.filter(function(element) {
+                element.$isBusbar !== true;
             })
         } else {
-            return state.loads2.filter(function(element) {
-                return element.$id !== load.$id;
+            loads = state.loads2.filter(function(element) {
+                return element.$id !== id;
             })
         }
+        return loads.map(function(element) {
+            return element.$id;
+        })
     }
 );

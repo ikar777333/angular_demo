@@ -16,8 +16,8 @@ export class Load {
   private isAllocated:   boolean;
   private isBusbar:      boolean;
 
-  constructor($id: number, $name: string, $area: LoadAreas = LoadAreas.AREA1, $purpose: LoadPurposes = LoadPurposes.PURPOSE1, 
-    $subPurpose: LoadSubPurposes = LoadSubPurposes.SUB_PURPOSE1, $loadType: LoadTypes, $parentId: number, $isBusbar: boolean = false) 
+  constructor($id: number, $name: string, $area: LoadAreas, $purpose: LoadPurposes, 
+    $subPurpose: LoadSubPurposes, $loadType: LoadTypes, $parentId: number, $isBusbar: boolean) 
     {
 		this.id =           $id;
 		this.name =         $name;
