@@ -17,12 +17,12 @@ import * as fromRoot from '../../store/reducers';
 })
 export class LoadDialogComponent implements OnInit {
   form =  {
-    name: "",
-    area: "",
-    purpose: "",
-    subPurpose: "",
-    loadType: "",
-    relatedLoad: 0
+    name:         "",
+    area:         "",
+    purpose:      "",
+    subPurpose:   "",
+    loadType:     "",
+    relatedLoad:  0
   }
   areas =       Object.values(LoadAreas);
   purposes =    Object.values(LoadPurposes);
@@ -44,10 +44,10 @@ export class LoadDialogComponent implements OnInit {
 
   onClick(): void {
     this.data.$name = this.form.name;
-    //this.data.$area =  this.form.area;
-    //this.form.purpose = this.data.$purpose;
-    //this.form.subPurpose = this.data.$subPurpose;
-    //this.form.loadType = this.data.$loadType;
+    this.data.$area =  LoadAreas[this.form.area];
+    this.data.$purpose = LoadPurposes[this.form.purpose];
+    this.data.$subPurpose = LoadSubPurposes[this.form.subPurpose];
+    this.data.$loadType = LoadTypes[this.form.loadType];
     this.data.$parentId = this.form.relatedLoad;
     this.store.dispatch(new ChangeLoad(this.data))
   } 

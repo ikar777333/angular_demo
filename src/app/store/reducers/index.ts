@@ -32,63 +32,46 @@ export const getAllLoads = createSelector(
 );
 
 export const getNotAllocatedLoads = createSelector(
-    getLoadState,
-    (state) => {
-        return state.loads.filter(function(element){
-            return element.$isAllocated === false && element.$isBusbar === false;
-        })
-    },
+    getAllLoads,
+    fromLoads.getNotAllocatedLoads
 );
 
 export const getAllocatedLoads = createSelector(
-    getLoadState,
-    (state) => {
-        return state.loads.filter(function(element){
-            return element.$isAllocated === true && element.$isSupply === false ||
-                    element.$isBusbar === true;
-        })
-    }
+    getAllLoads,
+    fromLoads.getAllocatedLoads
 );
 
 export const getSupplyAllocatedLoads = createSelector(
-    getLoadState,
-    (state) => {
-        return state.loads.filter(function(element){
-            return element.$isAllocated === true && element.$isSupply === true;
-        })
-    },
+    getAllLoads,
+    fromLoads.getSupplyAllocatedLoads
 );
 
 export const getRelatedLoads = (loadType: string, id: number) => createSelector(
-    getLoadState,
-    (state) => {
-        let loads: Array<Load>;
+    getAllLoads,
+    (loads) => {
+        let relatedLoads: Array<Load>;
         if(loadType === LoadTypes.TYPE2) {
-            loads = state.loads.filter(function(element) {
+            relatedLoads = loads.filter(function(element) {
                 return element.$isBusbar === true;
             })
         } else {
-            loads = state.loads.filter(function(element) {
-                return element.$id !== id && element.$isAllocated === true && element.$isSupply === false ||
-                        element.$isBusbar === true;
-            })
-            recursiveSearch(id, loads);
+            relatedLoads = loads.filter(function(element) {
+                return element.$isBusbar === true;})
+            relatedLoads = recursiveSearch(id, relatedLoads);
         }
-        return loads.map(function(element) {
+        return relatedLoads.map(function(element) {
             return element.$id;
         })
     }
 );
 
-function recursiveSearch(parentId: number, loads: Array<Load>) {
-    console.log(loads)
-    var childrens = loads.map(function(element) {
-        if(element.$parentId === parentId) {
-            //recursiveSearch(element.$id, this);
-            element.$id = -1;
+function recursiveSearch(parentId: number, loads: Array<Load>, loadIds: Array<Load> = []): Array<Load> {
+    for(var i = 0; i < loads.length; i++) {
+        if (loads[i].$id !== parentId) {
+          loadIds.push(loads[i]);
+          if (loads[i].$childrenLoads && loads[i].$childrenLoads.length)
+            recursiveSearch(parentId, loads[i].$childrenLoads, loadIds);
         }
-        return element;
-    });
-
-    console.log(childrens);
+    }
+    return loadIds;
 }

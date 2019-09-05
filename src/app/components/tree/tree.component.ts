@@ -7,7 +7,6 @@ import { Store } from '@ngrx/store'
 
 import { Load } from "../../models/Load";
 import * as fromRoot from '../../store/reducers';
-import { AddOne, } from 'src/app/store/actions/loads';
 import { LoadDialogComponent } from "../LoadDialog/LoadDialog.component"
 
 @Component({
@@ -25,7 +24,7 @@ export class TreeComponent implements OnInit {
   dataSource3 = new MatTableDataSource();
 
   constructor(private store: Store<fromRoot.State>, public dialog: MatDialog) { 
-    this.list = store.select(fromRoot.getNotAllocatedLoads);
+    this.list =  store.select(fromRoot.getNotAllocatedLoads);
     this.list2 = store.select(fromRoot.getAllocatedLoads);
     this.list3 = store.select(fromRoot.getSupplyAllocatedLoads);
   }
@@ -58,7 +57,7 @@ export class TreeComponent implements OnInit {
     }
 
     // updates moved data and table, but not dynamic if more dropzones
-    this.dataSource.data = clonedeep(this.dataSource.data);
+    this.dataSource.data =  clonedeep(this.dataSource.data);
     this.dataSource2.data = clonedeep(this.dataSource2.data);
     this.dataSource3.data = clonedeep(this.dataSource3.data);
   }

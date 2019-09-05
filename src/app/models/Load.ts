@@ -12,12 +12,13 @@ export class Load {
   private subPurpose:    LoadSubPurposes;
   private loadType:      LoadTypes;
   private isSupply:      boolean;
+  private childrenLoads:   Array<Load>;
   private parentId:      number;
   private isAllocated:   boolean;
   private isBusbar:      boolean;
 
   constructor($id: number, $name: string, $area: LoadAreas, $purpose: LoadPurposes, 
-    $subPurpose: LoadSubPurposes, $loadType: LoadTypes, $parentId: number, $isBusbar: boolean) 
+    $subPurpose: LoadSubPurposes, $loadType: LoadTypes, $childrenLoads: Array<Load>, $parentId: number, $isBusbar: boolean) 
     {
 		this.id =           $id;
 		this.name =         $name;
@@ -25,7 +26,8 @@ export class Load {
 		this.purpose =      $purpose;
 		this.subPurpose =   $subPurpose;
 		this.loadType =     $loadType;
-		this.isSupply =     $loadType === LoadTypes.TYPE2 ? true : false;
+          this.isSupply =     $loadType === LoadTypes.TYPE2 ? true : false;
+          this.childrenLoads= $childrenLoads;
 		this.parentId =     $parentId;
 		this.isAllocated =  $parentId === null ? false : true;
 		this.isBusbar =     $isBusbar;
@@ -134,6 +136,22 @@ export class Load {
      */
 	public get $isSupply(): boolean {
 		return this.isSupply;
+     }
+     
+    /**
+     * Getter $childrenIds
+     * @return {  Array<Load>}
+     */
+	public get $childrenLoads():   Array<Load> {
+		return this.childrenLoads;
+	}
+
+    /**
+     * Setter $childrenIds
+     * @param {  Array<Load>} value
+     */
+	public set $childrenLoads(value:   Array<Load>) {
+		this.childrenLoads = value;
 	}
 
     /**
