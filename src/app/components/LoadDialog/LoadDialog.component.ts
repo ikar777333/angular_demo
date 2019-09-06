@@ -5,7 +5,7 @@ import {LoadAreas} from "../../models/LoadAreas.enum"
 import {LoadPurposes} from "../../models/LoadPurposes.enum"
 import {LoadSubPurposes} from "../../models/LoadSubPurposes.enum"
 import {LoadTypes} from "../../models/LoadTypes.enum"
-import {ChangeLoad} from "../../store/actions/loads"
+import {ChangeLoadState} from "../../store/actions/loads"
 import { Load } from "../../models/Load";
 import { Store } from '@ngrx/store'
 import * as fromRoot from '../../store/reducers';
@@ -28,7 +28,7 @@ export class LoadDialogComponent implements OnInit {
   purposes =    Object.values(LoadPurposes);
   subPurposes = Object.values(LoadSubPurposes);
   loadTypes =   Object.values(LoadTypes);
-  relatedLoads: Array<string | number>;
+  relatedLoads: Array<RelatedLoad>;
   @Output()
   selectionChange: EventEmitter<MatSelectChange>
 
@@ -43,13 +43,20 @@ export class LoadDialogComponent implements OnInit {
   }
 
   onClick(): void {
-    this.data.$name = this.form.name;
-    this.data.$area =  LoadAreas[this.form.area];
-    this.data.$purpose = LoadPurposes[this.form.purpose];
-    this.data.$subPurpose = LoadSubPurposes[this.form.subPurpose];
-    this.data.$loadType = LoadTypes[this.form.loadType];
-    this.data.$parentId = this.form.relatedLoad;
-    this.store.dispatch(new ChangeLoad(this.data))
+
+    var newLoad = new Load(
+      this.data.$id,
+      this.form.name,
+      LoadAreas[this.form.area],
+      LoadPurposes[this.form.purpose],
+      LoadSubPurposes[this.form.subPurpose],
+      LoadTypes[this.form.loadType],
+      this.data.$childrenLoads,
+      Number(this.form.relatedLoad),
+      this.data.$isBusbar
+    )
+
+    this.store.dispatch(new ChangeLoadState({oldLoad: this.data, newLoad: newLoad}))
   } 
 
   onChange() {
@@ -68,5 +75,9 @@ export class LoadDialogComponent implements OnInit {
     this.store.select(fromRoot.getRelatedLoads(this.form.loadType, this.data.$id))
       .subscribe(data => this.relatedLoads = data);
   }
+}
 
+interface RelatedLoad {
+  loadName: string,
+  loadId:number,
 }

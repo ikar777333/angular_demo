@@ -16,17 +16,16 @@ import { LoadDialogComponent } from "../LoadDialog/LoadDialog.component"
 })
 export class TreeComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'area', 'loadType'];
-  list:   Observable<Array<Load>>;
-  list2:  Observable<Array<Load>>;
-  list3:  Observable<Array<Load>>;
-  dataSource = new MatTableDataSource();
-  dataSource2 = new MatTableDataSource();
-  dataSource3 = new MatTableDataSource();
+  notAllocatedDataSource =     new MatTableDataSource();
+  allocatedDataSource =        new MatTableDataSource();
+  supplyAllocatedDataSource =  new MatTableDataSource();
+  test2: Array<Load> = [];
 
-  constructor(private store: Store<fromRoot.State>, public dialog: MatDialog) { 
-    this.list =  store.select(fromRoot.getNotAllocatedLoads);
-    this.list2 = store.select(fromRoot.getAllocatedLoads);
-    this.list3 = store.select(fromRoot.getSupplyAllocatedLoads);
+  constructor(private store: Store<fromRoot.State>, public dialog: MatDialog) {     ;
+    store.select(fromRoot.getNotAllocatedLoads).subscribe(data => this.notAllocatedDataSource.data = data);
+    store.select(fromRoot.getAllocatedLoads).subscribe(data => this.allocatedDataSource.data = data);
+    store.select(fromRoot.getSupplyAllocatedLoads).subscribe(data => this.supplyAllocatedDataSource.data = data);
+    store.select(fromRoot.getNotAllocatedLoads).subscribe(data => this.test2 = data)
   }
 
   openDialog(load: Load): void {
@@ -36,29 +35,27 @@ export class TreeComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      
+      this.notAllocatedDataSource.data =    clonedeep(this.notAllocatedDataSource.data);
+      this.allocatedDataSource.data =       clonedeep(this.allocatedDataSource.data);
+      this.supplyAllocatedDataSource.data = clonedeep(this.supplyAllocatedDataSource.data);
     });
   }
 
-  ngOnInit() {
-    this.list.subscribe(data => this.dataSource.data = data);
-    this.list2.subscribe(data => this.dataSource2.data = data);
-    this.list3.subscribe(data => this.dataSource3.data = data);
-  }
+  ngOnInit() {}
 
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex)
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
                         event.previousIndex,
-                        event.currentIndex);
+                        event.currentIndex);                          
     }
 
     // updates moved data and table, but not dynamic if more dropzones
-    this.dataSource.data =  clonedeep(this.dataSource.data);
-    this.dataSource2.data = clonedeep(this.dataSource2.data);
-    this.dataSource3.data = clonedeep(this.dataSource3.data);
+    this.notAllocatedDataSource.data =    clonedeep(this.notAllocatedDataSource.data);
+    this.allocatedDataSource.data =       clonedeep(this.allocatedDataSource.data);
+    this.supplyAllocatedDataSource.data = clonedeep(this.supplyAllocatedDataSource.data);
   }
 }

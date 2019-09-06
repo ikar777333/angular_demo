@@ -1,8 +1,8 @@
 <br>
 
-<mat-table [dataSource]="dataSource"
+<mat-table [dataSource]="notAllocatedDataSource"
   class="mat-elevation-z8" cdkDropList #table1 #list1="cdkDropList"
-  [cdkDropListData]="dataSource.data" [cdkDropListConnectedTo]="[list2 , list3]"
+  [cdkDropListData]="notAllocatedDataSource.data" [cdkDropListConnectedTo]="[list2 , list3]"
   (cdkDropListDropped)="drop($event)" id="table1">
 
     <ng-container matColumnDef="id">
@@ -31,8 +31,8 @@
 
 <br>
 
-<mat-table [dataSource]="dataSource2" class="mat-elevation-z8"
-  cdkDropList #table2 #list2="cdkDropList" [cdkDropListData]="dataSource2.data"
+<mat-table [dataSource]="allocatedDataSource" class="mat-elevation-z8"
+  cdkDropList #table2 #list2="cdkDropList" [cdkDropListData]="allocatedDataSource.data"
   [cdkDropListConnectedTo]="[list1, list3]" (cdkDropListDropped)="drop($event)" id="table2">
 
   <ng-container matColumnDef="id">
@@ -61,8 +61,8 @@
 
 <br>
 
-<mat-table [dataSource]="dataSource3" class="mat-elevation-z8"
-  cdkDropList #table3 #list3="cdkDropList" [cdkDropListData]="dataSource3.data"
+<mat-table [dataSource]="supplyAllocatedDataSource" class="mat-elevation-z8"
+  cdkDropList #table3 #list3="cdkDropList" [cdkDropListData]="supplyAllocatedDataSource.data"
   [cdkDropListConnectedTo]="[list1, list2]" (cdkDropListDropped)="drop($event)" id="table3">
 
   <ng-container matColumnDef="id">

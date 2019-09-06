@@ -12,7 +12,7 @@ export class Load {
   private subPurpose:    LoadSubPurposes;
   private loadType:      LoadTypes;
   private isSupply:      boolean;
-  private childrenLoads:   Array<Load>;
+  private childrenLoads: Array<Load>;
   private parentId:      number;
   private isAllocated:   boolean;
   private isBusbar:      boolean;

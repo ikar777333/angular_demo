@@ -26,28 +26,23 @@ export const metaReducers: MetaReducer<State>[] = [logger];
 export const getLoadState = 
     createFeatureSelector<fromLoads.State>('loads');
 
-export const getAllLoads = createSelector(
-    getLoadState,
-    fromLoads.getLoads,
-);
-
 export const getNotAllocatedLoads = createSelector(
-    getAllLoads,
+    getLoadState,
     fromLoads.getNotAllocatedLoads
 );
 
 export const getAllocatedLoads = createSelector(
-    getAllLoads,
+    getLoadState,
     fromLoads.getAllocatedLoads
 );
 
 export const getSupplyAllocatedLoads = createSelector(
-    getAllLoads,
+    getLoadState,
     fromLoads.getSupplyAllocatedLoads
 );
 
 export const getRelatedLoads = (loadType: string, id: number) => createSelector(
-    getAllLoads,
+    getAllocatedLoads,
     (loads) => {
         let relatedLoads: Array<Load>;
         if(loadType === LoadTypes.TYPE2) {
@@ -59,9 +54,7 @@ export const getRelatedLoads = (loadType: string, id: number) => createSelector(
                 return element.$isBusbar === true;})
             relatedLoads = recursiveSearch(id, relatedLoads);
         }
-        return relatedLoads.map(function(element) {
-            return element.$id;
-        })
+        return relatedLoads;
     }
 );
 
