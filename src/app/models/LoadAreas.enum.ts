@@ -1,6 +1,6 @@
 export enum LoadAreas {
-    AREA1 = "area1",
-    AREA2 = "area2",
-    AREA3 = "area3",
-    AREA4 = "area4",
+    AREA1 = "AREA1",
+    AREA2 = "AREA2",
+    AREA3 = "AREA3",
+    AREA4 = "AREA4",
 }

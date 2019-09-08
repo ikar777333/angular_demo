@@ -131,12 +131,15 @@ function removeChildrenLoads(load: Load, state: State) {
   load.$childrenLoads.length = 0;
 }
 
-function recursiveSearch(id: number, loads: Array<Load>, load: Load = null): Load {
+function recursiveSearch(id: number, loads: Array<Load>): Load {
+  var load;
   for(var i = 0; i < loads.length; i++) {
       if(loads[i].$id === id) {
-        load = loads[i];
+        return loads[i];
       } else if(loads[i].$childrenLoads && loads[i].$childrenLoads.length) {
-        recursiveSearch(id, loads[i].$childrenLoads, load);
+        load = recursiveSearch(id, loads[i].$childrenLoads);
+        if(loads[i].$id === id)
+          return loads[i];
       }  
   }
   return load;

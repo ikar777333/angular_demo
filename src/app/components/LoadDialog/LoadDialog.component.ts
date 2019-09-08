@@ -22,13 +22,13 @@ export class LoadDialogComponent implements OnInit {
     purpose:      "",
     subPurpose:   "",
     loadType:     "",
-    relatedLoad:  0
+    relatedLoad:  null
   }
   areas =       Object.values(LoadAreas);
   purposes =    Object.values(LoadPurposes);
   subPurposes = Object.values(LoadSubPurposes);
   loadTypes =   Object.values(LoadTypes);
-  relatedLoads: Array<RelatedLoad>;
+  relatedLoads: Array<string>;
   @Output()
   selectionChange: EventEmitter<MatSelectChange>
 
@@ -52,7 +52,7 @@ export class LoadDialogComponent implements OnInit {
       LoadSubPurposes[this.form.subPurpose],
       LoadTypes[this.form.loadType],
       this.data.$childrenLoads,
-      Number(this.form.relatedLoad),
+      Number(this.form.relatedLoad.$id),
       this.data.$isBusbar
     )
 
@@ -75,9 +75,4 @@ export class LoadDialogComponent implements OnInit {
     this.store.select(fromRoot.getRelatedLoads(this.form.loadType, this.data.$id))
       .subscribe(data => this.relatedLoads = data);
   }
-}
-
-interface RelatedLoad {
-  loadName: string,
-  loadId:number,
 }
