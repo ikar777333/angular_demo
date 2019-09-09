@@ -84,7 +84,6 @@ function removeFromOldLoad(load: Load, state: State) {
   if(load.$parentId === null) {
     var index = lodash.findIndex(state.notAllocatedLoads, {id: load.$id});
     state.notAllocatedLoads.splice(index, 1);
-    console.log(state.notAllocatedLoads)
   } else if (load.$isSupply) {
     var index = lodash.findIndex(state.supplyAllocatedLoads, {id: load.$id});
     state.supplyAllocatedLoads.splice(index, 1);

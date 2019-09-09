@@ -60,7 +60,7 @@ export const getRelatedLoads = (loadType: string, id: number) => createSelector(
                 loadId:   element.$id,
             }
         })
-        relatedLoads.push({loadName: "",loadId:   null,});
+        relatedLoads.push({loadName: "",loadId: null,});
         return relatedLoads;
     }
 );
@@ -75,7 +75,6 @@ function recursiveSearch(parentId: number, loads: Array<Load>, loadIds: Array<Lo
     }
     return loadIds;
 }
-
 export interface RelatedLoad {
     loadName: string,
     loadId:   number,

@@ -6,6 +6,8 @@ import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store'
 
 import { Load } from "../../models/Load";
+import {LoadTypes} from "../../models/LoadTypes.enum"
+import {ChangeLoadState} from "../../store/actions/loads"
 import * as fromRoot from '../../store/reducers';
 import { LoadDialogComponent } from "../LoadDialog/LoadDialog.component"
 
@@ -58,10 +60,56 @@ export class TreeComponent implements OnInit {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);                           
+    
+      var load: Load = event.previousContainer.data[event.previousIndex];
+      var newLoad: Load;
+
+      switch(event.container.id) {
+        case "table1": {
+          newLoad = new Load(
+            load.$id,
+            load.$name,
+            load.$area,
+            load.$purpose,
+            load.$subPurpose,
+            load.$loadType,
+            load.$childrenLoads,
+            null,
+            load.$isBusbar
+          )
+          break;
+        }
+        case "table2": {
+          newLoad = new Load(
+            load.$id,
+            load.$name,
+            load.$area,
+            load.$purpose,
+            load.$subPurpose,
+            load.$loadType,
+            load.$childrenLoads,
+            4,
+            load.$isBusbar
+          )
+          break;
+        }
+        case "table3": {
+          newLoad = new Load(
+            load.$id,
+            load.$name,
+            load.$area,
+            load.$purpose,
+            load.$subPurpose,
+            LoadTypes.TYPE2,
+            load.$childrenLoads,
+            4,
+            load.$isBusbar
+          )
+          break;
+        }
+      }
+
+      this.store.dispatch(new ChangeLoadState({oldLoad: load, newLoad: newLoad}))  
     }
 
     // updates moved data and table, but not dynamic if more dropzones
