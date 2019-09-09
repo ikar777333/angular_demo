@@ -44,7 +44,7 @@ export const getSupplyAllocatedLoads = createSelector(
 export const getRelatedLoads = (loadType: string, id: number) => createSelector(
     getAllocatedLoads,
     (loads) => {
-        let relatedLoads: Array<Load>;
+        let relatedLoads;
         if(loadType === LoadTypes.TYPE2) {
             relatedLoads = loads.filter(function(element) {
                 return element.$isBusbar === true;
@@ -54,6 +54,13 @@ export const getRelatedLoads = (loadType: string, id: number) => createSelector(
                 return element.$isBusbar === true;})
             relatedLoads = recursiveSearch(id, relatedLoads);
         }
+        relatedLoads = relatedLoads.map(function(element){
+            return {
+                loadName: element.$name,
+                loadId:   element.$id,
+            }
+        })
+        relatedLoads.push({loadName: "",loadId:   null,});
         return relatedLoads;
     }
 );
@@ -68,3 +75,8 @@ function recursiveSearch(parentId: number, loads: Array<Load>, loadIds: Array<Lo
     }
     return loadIds;
 }
+
+export interface RelatedLoad {
+    loadName: string,
+    loadId:   number,
+  }

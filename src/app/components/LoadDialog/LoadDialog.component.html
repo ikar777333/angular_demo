@@ -45,7 +45,7 @@
     <mat-label>Related load:</mat-label>
     <mat-select [(value)]="form.relatedLoad">
       <mat-option *ngFor="let relatedLoad of relatedLoads" [value]="relatedLoad">
-        {{relatedLoad}}
+        {{relatedLoad.loadName}}
       </mat-option>
     </mat-select>
   </mat-form-field>
