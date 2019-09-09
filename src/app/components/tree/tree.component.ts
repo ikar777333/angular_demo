@@ -1,4 +1,4 @@
-import {Component, ViewChild, OnInit, ContentChildren, QueryList} from '@angular/core';
+import {Component, Output, OnInit, ContentChildren, QueryList, EventEmitter} from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragExit} from '@angular/cdk/drag-drop';
 import { MatTableDataSource, MatDialog } from '@angular/material';
 import clonedeep from 'lodash.clonedeep';
@@ -54,15 +54,14 @@ export class TreeComponent implements OnInit {
     this.supplyAllocatedDataSource.data = clonedeep(this.supplyAllocatedDataSource.data);
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  drop(event: CdkDragDrop<Array<any>>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
                         event.previousIndex,
-                        event.currentIndex); 
-     console.log(event.item.data)                          
+                        event.currentIndex);                           
     }
 
     // updates moved data and table, but not dynamic if more dropzones
