@@ -6,7 +6,7 @@
   (cdkDropListDropped)="drop($event)" id="table1">
 
     <ng-container matColumnDef="id">
-        <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
     </ng-container>
     
@@ -16,17 +16,17 @@
     </ng-container>
     
     <ng-container matColumnDef="area">
-        <mat-header-cell *matHeaderCellDef> area </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef> Area </mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.area}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="loadType">
-      <mat-header-cell *matHeaderCellDef> loadType </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef> Load Type </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.loadType}} </mat-cell>
     </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row (click)="openDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
+  <mat-row (click)="openLoadDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
 </mat-table>
 
 <br>
@@ -36,7 +36,7 @@
   [cdkDropListConnectedTo]="[list1, list3]" (cdkDropListDropped)="drop($event)" id="table2">
 
   <ng-container matColumnDef="id">
-    <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
   </ng-container>
 
@@ -46,17 +46,17 @@
   </ng-container>
 
   <ng-container matColumnDef="area">
-    <mat-header-cell *matHeaderCellDef> area </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef> Area </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.area}} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="loadType">
-  <mat-header-cell *matHeaderCellDef> loadType </mat-header-cell>
+  <mat-header-cell *matHeaderCellDef> Load Type </mat-header-cell>
   <mat-cell *matCellDef="let element"> {{element.loadType}} </mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row (click)="openDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
+  <mat-row (click)="openLoadDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
 </mat-table>
 
 <br>
@@ -66,7 +66,7 @@
   [cdkDropListConnectedTo]="[list1, list2]" (cdkDropListDropped)="drop($event)" id="table3">
 
   <ng-container matColumnDef="id">
-    <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
   </ng-container>
 
@@ -76,15 +76,15 @@
   </ng-container>
 
   <ng-container matColumnDef="area">
-    <mat-header-cell *matHeaderCellDef> area </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef> Area </mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.area}} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="loadType">
-  <mat-header-cell *matHeaderCellDef> loadType </mat-header-cell>
+  <mat-header-cell *matHeaderCellDef> Load Type </mat-header-cell>
   <mat-cell *matCellDef="let element"> {{element.loadType}} </mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row (click)="openDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
+  <mat-row (click)="openLoadDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
 </mat-table>

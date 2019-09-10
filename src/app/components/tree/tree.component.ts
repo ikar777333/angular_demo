@@ -31,9 +31,9 @@ export class TreeComponent implements OnInit {
     this.supplyAllocatedDataSourceSubscription =  this.store.select(fromRoot.getSupplyAllocatedLoads).subscribe(data => this.supplyAllocatedDataSource.data = data);
   }
 
-  openDialog(load: Load): void {
+  openLoadDialog(load: Load): void {
     const dialogRef = this.dialog.open(LoadDialogComponent, {
-      width: '30%',
+      width: '450px',
       data: load
     });
 
@@ -42,9 +42,9 @@ export class TreeComponent implements OnInit {
     });
   }
 
-  openDialog2(load: Load): void {
+  openChooseBusbarDialog(load: Load): void {
     const dialogRef = this.dialog.open(ChooseBusbarDialogComponent, {
-      width: '30%',
+      width: '450px',
       data: load
     });
 
@@ -109,7 +109,7 @@ export class TreeComponent implements OnInit {
           break;
         }
         case "table3": {
-          this.openDialog2(load);
+          this.openChooseBusbarDialog(load);
           break;
         }
       }
