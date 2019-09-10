@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
-import {ErrorStateMatcher} from '@angular/material/core';
+import {FormControl, FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn} from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import {LoadAreas} from "../../models/LoadAreas.enum"
 import {LoadPurposes} from "../../models/LoadPurposes.enum"
@@ -12,41 +11,21 @@ import { Load } from "../../models/Load";
 import { Store } from '@ngrx/store'
 import * as fromRoot from '../../store/reducers';
 
-
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
-
 @Component({
   selector: 'load-dialog-component',
   templateUrl: './LoadDialog.component.html',
   styleUrls: ['./LoadDialog.component.sass']
 })
 export class LoadDialogComponent implements OnInit {
-  form =  {
-    name:         "",
-    area:         "",
-    purpose:      "",
-    subPurpose:   "",
-    loadType:     "",
-    relatedLoad:  null
-  }
+  form: FormGroup;
   areas =       Object.values(LoadAreas);
   purposes =    Object.values(LoadPurposes);
   subPurposes = Object.values(LoadSubPurposes);
   loadTypes =   Object.values(LoadTypes);
   relatedLoads: Array<fromRoot.RelatedLoad>;
+  loadNames:    Array<string>;
   @Output()
   selectionChange: EventEmitter<MatSelectChange>
-  
-  nameFormControl = new FormControl('', [
-    Validators.required,
-    Validators.email,
-  ]);
-  matcher = new MyErrorStateMatcher();
 
   constructor(
     private store: Store<fromRoot.State>, 
@@ -60,15 +39,18 @@ export class LoadDialogComponent implements OnInit {
 
   onClick(): void {
 
+    if(!this.form.valid)
+      return;
+
     var newLoad = new Load(
       this.data.$id,
-      this.form.name,
-      LoadAreas[this.form.area],
-      LoadPurposes[this.form.purpose],
-      LoadSubPurposes[this.form.subPurpose],
-      LoadTypes[this.form.loadType],
+      this.form.get("name").value,
+      this.form.get("area").value,
+      this.form.get("purpose").value,
+      this.form.get("subPurpose").value,
+      this.form.get("loadType").value,
       this.data.$childrenLoads,
-      this.form.relatedLoad.loadId,
+      this.form.get("relatedLoad").value.loadId,
       this.data.$isBusbar
     )
 
@@ -76,23 +58,41 @@ export class LoadDialogComponent implements OnInit {
   } 
 
   onChange() {
-    this.store.select(fromRoot.getRelatedLoads(this.form.loadType, this.data.$id))
+    this.store.select(fromRoot.getRelatedLoads(this.form.get("loadType").value, this.data.$id))
       .subscribe(data => this.relatedLoads = data);
+  }
+  
+  nameValidator(loadNames: Array<string>): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+      if (loadNames.find(function(element){return control.value === element})) 
+        return { 'validUsername': true };
+      return null;
+    };
   }
 
   ngOnInit() {
-    this.form.name =        this.data.$name;
-    this.form.area =        this.data.$area;
-    this.form.purpose =     this.data.$purpose;
-    this.form.subPurpose =  this.data.$subPurpose;
-    this.form.loadType =    this.data.$loadType;
-
-    this.store.select(fromRoot.getRelatedLoads(this.form.loadType, this.data.$id))
+    this.store.select(fromRoot.getRelatedLoads(this.data.$loadType, this.data.$id))
       .subscribe(data => this.relatedLoads = data);
 
+    let loadName = this.data.$name;
+    this.store.select(fromRoot.getAllLoads)
+      .subscribe(data => {
+        this.loadNames = data.map(function(element){return element.$name}).filter(function(element){return element !== loadName});
+      });
+
     let parentId = this.data.$parentId;
-    this.form.relatedLoad = this.relatedLoads.find(function(element){
+    let relatedLoad = this.relatedLoads.find(function(element){
        return element.loadId === parentId;
       });
+
+    this.form = new FormBuilder().group({
+      name:         new FormControl(this.data.$name, [
+        Validators.required, this.nameValidator(this.loadNames)]),
+      area:         new FormControl(this.data.$area, Validators.required),
+      purpose:      new FormControl(this.data.$purpose, Validators.required),
+      subPurpose:   new FormControl(this.data.$subPurpose, Validators.required),
+      loadType:     new FormControl(this.data.$loadType, Validators.required),
+      relatedLoad:  new FormControl(relatedLoad, Validators.required),
+    });     
   }
 }

@@ -1,19 +1,19 @@
 <h1 mat-dialog-title>Configuration</h1>
 <div mat-dialog-content>
-
+<form [formGroup]="form">
   <mat-form-field class="example-full-width">
-    <input matInput [(ngModel)]="form.name" [formControl]="nameFormControl" [errorStateMatcher]="matcher" placeholder="Name" value="">
-    <mat-error *ngIf="nameFormControl.hasError('name') && !nameFormControl.hasError('required')">
-      Please enter a valid name
+    <input matInput formControlName="name" placeholder="Name">
+    <mat-error *ngIf="form.get('name').hasError('required')">
+      Name is required
     </mat-error>
-    <mat-error *ngIf="nameFormControl.hasError('required')">
-      Name is <strong>required</strong>
+    <mat-error *ngIf="form.get('name').hasError('validUsername')">
+      Your username has already been taken
     </mat-error>
   </mat-form-field>
 
   <mat-form-field>
     <mat-label>Area:</mat-label>
-    <mat-select [(value)]="form.area">
+    <mat-select formControlName="area">
       <mat-option *ngFor="let area of areas" [value]="area">
         {{area}}
       </mat-option>
@@ -22,7 +22,7 @@
 
   <mat-form-field>
     <mat-label>Metering purpose:</mat-label>
-    <mat-select [(value)]="form.purpose">
+    <mat-select formControlName="purpose">
       <mat-option *ngFor="let purpose of purposes" [value]="purpose">
         {{purpose}}
       </mat-option>
@@ -31,7 +31,7 @@
 
   <mat-form-field>
     <mat-label>Submetering purpose:</mat-label>
-    <mat-select [(value)]="form.subPurpose">
+    <mat-select formControlName="subPurpose">
       <mat-option *ngFor="let subPurpose of subPurposes" [value]="subPurpose">
         {{subPurpose}}
       </mat-option>
@@ -40,7 +40,7 @@
 
   <mat-form-field>
     <mat-label>Load type:</mat-label>
-    <mat-select (selectionChange)="onChange()" [(value)]="form.loadType">
+    <mat-select (selectionChange)="onChange()" formControlName="loadType">
       <mat-option *ngFor="let loadType of loadTypes" [value]="loadType">
         {{loadType}}
       </mat-option>
@@ -49,7 +49,7 @@
 
   <mat-form-field>
     <mat-label>Related load:</mat-label>
-    <mat-select [(value)]="form.relatedLoad">
+    <mat-select formControlName="relatedLoad">
       <mat-option *ngFor="let relatedLoad of relatedLoads" [value]="relatedLoad">
         {{relatedLoad.loadName}}
       </mat-option>
@@ -57,7 +57,7 @@
   </mat-form-field>
 
   <button mat-button (click)="onClick()">Click me!</button>
-
+</form>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cancel</button>

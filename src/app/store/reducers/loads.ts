@@ -79,6 +79,23 @@ export const getAllocatedLoads = (state: State) => state.allocatedLoads;
 
 export const getSupplyAllocatedLoads = (state: State) => state.supplyAllocatedLoads;
 
+export const getAllLoads = (state: State) => {
+  let allLoads: Array<Load> = []
+  allLoads = allLoads.concat(state.notAllocatedLoads);
+  allLoads = allLoads.concat(getLoadsRecursive(state.allocatedLoads, state));
+  allLoads = allLoads.concat(state.supplyAllocatedLoads);
+  return allLoads;
+}
+
+function getLoadsRecursive(loads: Array<Load>, state: State, allLoads: Array<Load> = []): Array<Load> {
+  for(var i = 0; i < loads.length; i++) {
+    allLoads.push(loads[i]);
+    if (loads[i].$childrenLoads && loads[i].$childrenLoads.length)
+        getLoadsRecursive(loads[i].$childrenLoads, state, allLoads);
+  }
+  return allLoads;
+}
+
 function removeFromOldLoad(load: Load, state: State) {
   console.log("removeFromOldLoad")
   if(load.$parentId === null) {

@@ -1,6 +1,5 @@
 import { ActionReducerMap, createSelector, createFeatureSelector, 
     ActionReducer, MetaReducer } from '@ngrx/store';
-
 import * as fromLoads from './loads';
 import { Load } from '../../models/Load'
 import { LoadTypes } from '../../models/LoadTypes.enum'
@@ -25,6 +24,11 @@ export const metaReducers: MetaReducer<State>[] = [logger];
 
 export const getLoadState = 
     createFeatureSelector<fromLoads.State>('loads');
+
+export const getAllLoads = createSelector(
+    getLoadState,
+    fromLoads.getAllLoads
+);
 
 export const getNotAllocatedLoads = createSelector(
     getLoadState,

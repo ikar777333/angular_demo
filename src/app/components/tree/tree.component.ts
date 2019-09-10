@@ -4,7 +4,6 @@ import { MatTableDataSource, MatDialog } from '@angular/material';
 import clonedeep from 'lodash.clonedeep';
 import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store'
-
 import { Load } from "../../models/Load";
 import {LoadTypes} from "../../models/LoadTypes.enum"
 import {ChangeLoadState} from "../../store/actions/loads"
