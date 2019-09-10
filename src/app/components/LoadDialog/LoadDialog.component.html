@@ -2,7 +2,13 @@
 <div mat-dialog-content>
 
   <mat-form-field class="example-full-width">
-    <input matInput [(ngModel)]="form.name" placeholder="Name" value="">
+    <input matInput [(ngModel)]="form.name" [formControl]="nameFormControl" [errorStateMatcher]="matcher" placeholder="Name" value="">
+    <mat-error *ngIf="nameFormControl.hasError('name') && !nameFormControl.hasError('required')">
+      Please enter a valid name
+    </mat-error>
+    <mat-error *ngIf="nameFormControl.hasError('required')">
+      Name is <strong>required</strong>
+    </mat-error>
   </mat-form-field>
 
   <mat-form-field>

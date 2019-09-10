@@ -1,5 +1,7 @@
 import { Component, OnInit, Inject, Output, EventEmitter } from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+import {ErrorStateMatcher} from '@angular/material/core';
 import { MatSelectChange } from '@angular/material/select';
 import {LoadAreas} from "../../models/LoadAreas.enum"
 import {LoadPurposes} from "../../models/LoadPurposes.enum"
@@ -9,6 +11,14 @@ import {ChangeLoadState} from "../../store/actions/loads"
 import { Load } from "../../models/Load";
 import { Store } from '@ngrx/store'
 import * as fromRoot from '../../store/reducers';
+
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
 
 @Component({
   selector: 'load-dialog-component',
@@ -31,6 +41,12 @@ export class LoadDialogComponent implements OnInit {
   relatedLoads: Array<fromRoot.RelatedLoad>;
   @Output()
   selectionChange: EventEmitter<MatSelectChange>
+  
+  nameFormControl = new FormControl('', [
+    Validators.required,
+    Validators.email,
+  ]);
+  matcher = new MyErrorStateMatcher();
 
   constructor(
     private store: Store<fromRoot.State>, 
