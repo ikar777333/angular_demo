@@ -10,6 +10,7 @@ import {LoadTypes} from "../../models/LoadTypes.enum"
 import {ChangeLoadState} from "../../store/actions/loads"
 import * as fromRoot from '../../store/reducers';
 import { LoadDialogComponent } from "../LoadDialog/LoadDialog.component"
+import { ChooseBusbarDialogComponent } from "../ChooseBusbarDialog/ChooseBusbarDialog.component"
 
 @Component({
   selector: 'app-tree',
@@ -39,6 +40,19 @@ export class TreeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       this.updateTables()
+    });
+  }
+
+  openDialog2(load: Load): void {
+    const dialogRef = this.dialog.open(ChooseBusbarDialogComponent, {
+      width: '30%',
+      data: load
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result)
+      this.store.dispatch(new ChangeLoadState({oldLoad: result.oldLoad, newLoad: result.newLoad}))
+      this.updateTables();
     });
   }
 
@@ -77,6 +91,7 @@ export class TreeComponent implements OnInit {
             null,
             load.$isBusbar
           )
+          this.store.dispatch(new ChangeLoadState({oldLoad: load, newLoad: newLoad}))
           break;
         }
         case "table2": {
@@ -91,27 +106,16 @@ export class TreeComponent implements OnInit {
             4,
             load.$isBusbar
           )
+          this.store.dispatch(new ChangeLoadState({oldLoad: load, newLoad: newLoad}))  
           break;
         }
         case "table3": {
-          newLoad = new Load(
-            load.$id,
-            load.$name,
-            load.$area,
-            load.$purpose,
-            load.$subPurpose,
-            LoadTypes.TYPE2,
-            load.$childrenLoads,
-            4,
-            load.$isBusbar
-          )
+          this.openDialog2(load);
           break;
         }
       }
 
-      this.store.dispatch(new ChangeLoadState({oldLoad: load, newLoad: newLoad}))  
     }
-
     // updates moved data and table, but not dynamic if more dropzones
     this.updateTables()
   }

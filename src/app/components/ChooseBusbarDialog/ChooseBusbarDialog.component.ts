@@ -32,6 +32,21 @@ export class ChooseBusbarDialogComponent implements OnInit {
   }
 
   onClick(): void {
+    let load = this.data;
+    let newLoad = new Load(
+      load.$id,
+      load.$name,
+      load.$area,
+      load.$purpose,
+      load.$subPurpose,
+      LoadTypes.TYPE2,
+      load.$childrenLoads,
+      this.form.relatedLoad.loadId,
+      load.$isBusbar
+    )
+    this.dialogRef.close({
+      oldLoad: this.data,
+      newLoad: newLoad
+    });
   }
-
 }
