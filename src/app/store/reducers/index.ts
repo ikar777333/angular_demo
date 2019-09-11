@@ -45,6 +45,7 @@ export const getSupplyAllocatedLoads = createSelector(
     fromLoads.getSupplyAllocatedLoads
 );
 
+///move to LoadDialog
 export const getRelatedLoads = (loadType: string, id: number) => createSelector(
     getAllocatedLoads,
     (loads) => {
@@ -69,6 +70,7 @@ export const getRelatedLoads = (loadType: string, id: number) => createSelector(
     }
 );
 
+//rename
 function recursiveSearch(parentId: number, loads: Array<Load>, loadIds: Array<Load> = []): Array<Load> {
     for(var i = 0; i < loads.length; i++) {
         if (loads[i].$id !== parentId) {
@@ -79,6 +81,8 @@ function recursiveSearch(parentId: number, loads: Array<Load>, loadIds: Array<Lo
     }
     return loadIds;
 }
+
+///move to LoadDialog
 export interface RelatedLoad {
     loadName: string,
     loadId:   number,

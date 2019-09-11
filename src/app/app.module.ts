@@ -19,6 +19,7 @@ import {
   MatSelectModule,
   MatInputModule,
 } from '@angular/material';
+import { FlexLayoutModule } from "@angular/flex-layout";
 import { DragDropModule } from '@angular/cdk/drag-drop'
 import { Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -62,6 +63,7 @@ import * as fromRoot from './store/reducers/index';
     MatNativeDateModule,
     MatSelectModule,
     MatInputModule,
+    FlexLayoutModule,
     DragDropModule,
     StoreModule.forRoot(fromRoot.reducers),
     StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production })

@@ -49,9 +49,10 @@ export class TreeComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
-      this.store.dispatch(new ChangeLoadState({oldLoad: result.oldLoad, newLoad: result.newLoad}))
-      this.updateTables();
+      if(result) {
+        this.store.dispatch(new ChangeLoadState({oldLoad: result.oldLoad, newLoad: result.newLoad}))
+        this.updateTables();
+      }
     });
   }
 
@@ -77,6 +78,7 @@ export class TreeComponent implements OnInit {
       var load: Load = event.previousContainer.data[event.previousIndex];
       var newLoad: Load;
 
+      ///TODO add clone method for Load
       switch(event.container.id) {
         case "table1": {
           newLoad = new Load(

@@ -1,7 +1,7 @@
-<h1 mat-dialog-title>Configuration</h1>
-<div mat-dialog-content>
+<h1 mat-dialog-title>Choose BusBar</h1>
+<div mat-dialog-content fxLayout="column" fxLayoutAlign="center">
   <mat-form-field>
-    <mat-label>Related load:</mat-label>
+    <mat-label>BusBar loads:</mat-label>
     <mat-select [(value)]="form.relatedLoad">
       <mat-option *ngFor="let relatedLoad of relatedLoads" [value]="relatedLoad">
         {{relatedLoad.loadName}}
@@ -9,7 +9,7 @@
     </mat-select>
   </mat-form-field>
 </div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button (click)="onClick()" cdkFocusInitial>Ok</button>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="center center">
+  <button mat-button color="primary" (click)="onNoClick()">Cancel</button>
+  <button mat-button color="primary" (click)="onClick()" cdkFocusInitial>Ok</button>
 </div>
