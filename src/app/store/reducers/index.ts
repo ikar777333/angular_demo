@@ -1,7 +1,8 @@
 import { ActionReducerMap, createSelector, createFeatureSelector, 
     ActionReducer, MetaReducer } from '@ngrx/store';
-
 import * as fromLoads from './loads';
+import { Load } from '../../models/Load'
+import { LoadTypes } from '../../models/LoadTypes.enum'
 
 export interface State {
     loads: fromLoads.State;
@@ -24,12 +25,65 @@ export const metaReducers: MetaReducer<State>[] = [logger];
 export const getLoadState = 
     createFeatureSelector<fromLoads.State>('loads');
 
-export const getAllLoads1 = createSelector(
+export const getAllLoads = createSelector(
     getLoadState,
-    fromLoads.getLoads1,
+    fromLoads.getAllLoads
 );
 
-export const getAllLoads2 = createSelector(
+export const getNotAllocatedLoads = createSelector(
     getLoadState,
-    fromLoads.getLoads2,
+    fromLoads.getNotAllocatedLoads
 );
+
+export const getAllocatedLoads = createSelector(
+    getLoadState,
+    fromLoads.getAllocatedLoads
+);
+
+export const getSupplyAllocatedLoads = createSelector(
+    getLoadState,
+    fromLoads.getSupplyAllocatedLoads
+);
+
+///move to LoadDialog
+export const getRelatedLoads = (loadType: string, id: number) => createSelector(
+    getAllocatedLoads,
+    (loads) => {
+        let relatedLoads;
+        if(loadType === LoadTypes.TYPE2) {
+            relatedLoads = loads.filter(function(element) {
+                return element.$isBusbar === true;
+            })
+        } else {
+            relatedLoads = loads.filter(function(element) {
+                return element.$isBusbar === true;})
+            relatedLoads = recursiveSearch(id, relatedLoads);
+        }
+        relatedLoads = relatedLoads.map(function(element){
+            return {
+                loadName: element.$name,
+                loadId:   element.$id,
+            }
+        })
+        relatedLoads.push({loadName: "",loadId: null,});
+        return relatedLoads;
+    }
+);
+
+//rename
+function recursiveSearch(parentId: number, loads: Array<Load>, loadIds: Array<Load> = []): Array<Load> {
+    for(var i = 0; i < loads.length; i++) {
+        if (loads[i].$id !== parentId) {
+          loadIds.push(loads[i]);
+          if (loads[i].$childrenLoads && loads[i].$childrenLoads.length)
+            recursiveSearch(parentId, loads[i].$childrenLoads, loadIds);
+        }
+    }
+    return loadIds;
+}
+
+///move to LoadDialog
+export interface RelatedLoad {
+    loadName: string,
+    loadId:   number,
+  }
