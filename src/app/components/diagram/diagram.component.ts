@@ -10,6 +10,7 @@ import { STOCKS } from './stocks';
 
 @Component({
   selector: 'app-diagram',
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './diagram.component.html',
   styleUrls: ['./diagram.component.css']
 })
