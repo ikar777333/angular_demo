@@ -1,4 +1,12 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { Store } from '@ngrx/store'
+import { Load } from "../../models/Load";
+import { LoadTypes } from "../../models/LoadTypes.enum"
+import { ChangeLoadState } from "../../store/actions/loads"
+import * as fromRoot from '../../store/reducers';
+import { LoadDialogComponent } from "../LoadDialog/LoadDialog.component"
+import { ChooseBusbarDialogComponent } from "../ChooseBusbarDialog/ChooseBusbarDialog.component"
 
 import * as d3 from 'd3-selection';
 import * as d3Scale from 'd3-scale';
@@ -18,17 +26,20 @@ export class DiagramComponent implements OnInit {
 
   title = 'Line Chart';
 
-  private margin = {top: 20, right: 20, bottom: 30, left: 50};
+  private margin = {top: 40, right: 90, bottom: 50, left: 90};
   private width: number;
   private height: number;
   private x: any;
   private y: any;
   private svg: any;
+  private g: any;
+  private treemap: any;
   private line: d3Shape.Line<[number, number]>;
 
-  constructor() { 
-    this.width = 900 - this.margin.left - this.margin.right;
+  constructor(private store: Store<fromRoot.State>, public dialog: MatDialog) { 
+    this.width = 660 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
+    this.treemap = d3.tree().size([this.width, this.height]);
   }
 
   ngOnInit() {
@@ -39,9 +50,11 @@ export class DiagramComponent implements OnInit {
   }
 
   private initSvg() {
-    this.svg = d3.select('svg')
-        .append('g')
-        .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+    this.svg = d3.select("body").append("svg")
+      .attr("width", this.width + this.margin.left + this.margin.right)
+      .attr("height", this.height + this.margin.top + this.margin.bottom)
+    this.g = this.svg.append("g")
+      .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 }
 
 private initAxis() {
