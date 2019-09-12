@@ -151,11 +151,12 @@ function recursiveSearch(id: number, loads: Array<Load>): Load {
   var load;
   for(var i = 0; i < loads.length; i++) {
       if(loads[i].$id === id) {
-        return loads[i];
+        load = loads[i]
+        return load;
       } else if(loads[i].$childrenLoads && loads[i].$childrenLoads.length) {
         load = recursiveSearch(id, loads[i].$childrenLoads);
-        if(loads[i].$id === id)
-          return loads[i];
+        if(load && load.$id === id)
+          return load;
       }  
   }
   return load;
