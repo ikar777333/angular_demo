@@ -46,12 +46,14 @@ export class DiagramComponent implements OnInit {
     this.initLinks();
     this.initNodes();
     this.initZoom();
+    this.initDrugAndDrop();
   }
 
   private initData() {
     this.treeData = this.loads.map(function(element){return new Node(element)});
     this.nodes = d3.hierarchy(this.treeData[0])
     this.nodes = this.treemap(this.nodes);
+    
   }
 
   private initSvg() {
@@ -64,6 +66,8 @@ export class DiagramComponent implements OnInit {
   }
 
   private initLinks() {
+
+  // Add the links between nodes:
     this.g.selectAll(".link")
     .data(this.nodes.descendants().slice(1))
     .enter().append("path")
@@ -108,7 +112,6 @@ export class DiagramComponent implements OnInit {
   private updateDiagram() {
     this.svg.selectAll('.node').remove();
     this.svg.selectAll('.link').remove();
-
     this.initData();
     this.initLinks();
     this.initNodes();
@@ -130,6 +133,24 @@ export class DiagramComponent implements OnInit {
     this.svg.call(d3.zoom().scaleExtent([0.1, 3]).on("zoom", function () {
       svg.attr("transform", d3.event.transform)
     }))
+  }
+
+  private initDrugAndDrop() {
+    this.svg.selectAll(".node").call(d3.drag()
+    .on("start", function(d: any) {
+      //d3.select(this).raise().attr("stroke", "black")
+    })
+    .on("drag", function(d: any) {
+      d3.select(this).attr("transform", "translate(" + (d.x = d3.event.x) + "," + (d.y = d3.event.y) + ")")
+    })
+    .on("end", (d: any) => {
+      this.updateLink()
+    }));
+  }
+
+  private updateLink() {
+    this.svg.selectAll('.link').remove();
+    this.initLinks();
   }
 
 }
