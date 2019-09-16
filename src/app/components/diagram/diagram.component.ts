@@ -71,19 +71,11 @@ export class DiagramComponent implements OnInit {
       .append('path')
       .attr("class", "link")
       .attr("d", function(d) {
-        return "M" + (d.source.x + 25) + "," + d.source.y
-          + "C" + (d.source.x + 25) + "," + (d.source.y + d.target.y) / 2
-          + " " + (d.target.x + 25) + "," +  (d.source.y + d.target.y) / 2
-          + " "+ (d.target.x + 25) + "," + d.target.y;
+        return "M" + (d.source.x + 25) + "," + (d.source.y + 24)
+        + "C" + (d.source.x + 25) + "," + (d.source.y + d.target.y) / 2
+        + " " + (d.target.x + 25) + "," +  (d.source.y + d.target.y) / 2
+        + " "+ (d.target.x + 25) + "," + d.target.y;
       });
-  }
-
-  private nodeId(d) {
-    return d.data.load.$id;
-  }
-
-  private linkId(d) {
-    return d.source.data.load.$id + "-" + d.target.data.load.$id;
   }
 
   private initNodes(){
@@ -98,10 +90,9 @@ export class DiagramComponent implements OnInit {
 
     node.append("rect")
       .attr("width", 50)
-      .attr("height", 25)
+      .attr("height", 24)
       .on('click', (d) => {
-        this.openLoadDialog(d.data.load);
-      })
+        this.openLoadDialog(d.data.load);})
 
     node.append("text")
       .attr("dy", ".35em")
@@ -109,12 +100,6 @@ export class DiagramComponent implements OnInit {
       .attr("y", function(d) { return d.children ? -20 : 40; })
       .style("text-anchor", "middle")
       .text(function(d) { return d.data.load.$name; });
-
-    /*node.append("text")
-      .attr("dy", ".35em")
-      .attr("y", function(d) { return d.children ? -20 : 20; })
-      .style("text-anchor", "middle")
-      .text(function(d) { return d.data.load.$name; });*/
   }
 
   private removeLink() {
@@ -131,10 +116,10 @@ export class DiagramComponent implements OnInit {
     this.initData();
     this.initLinks();
     this.initNodes();
+    this.initDrugAndDrop();
   }
 
   private openLoadDialog(load: Load): void {
-    console.log("gfg")
     const dialogRef = this.dialog.open(LoadDialogComponent, {
       width: '450px',
       data: load
@@ -155,24 +140,21 @@ export class DiagramComponent implements OnInit {
 
   private initDrugAndDrop() {
     this.svg.selectAll(".node").call(d3.drag()
-    .on("start", function(d: any) {
-    })
     .on("drag", function(d: any) {
       d3.select(this).attr("transform", "translate(" + (d.x = d3.event.x) + "," + (d.y = d3.event.y) + ")");
     })
-    .on("end", (d: any) => {
-      this.updateLink(d)
-    }));
+    .on("start.render drag.render end.render", () =>
+        this.updateLink()
+    ));
   }
 
   private onOverlay() {
     
   }
 
-  private updateLink(d: any) {
+  private updateLink() {
     this.svg.selectAll('.link').remove();
     this.initLinks();
-    this.g.selectAll(".node").raise();
   }
 
 }
