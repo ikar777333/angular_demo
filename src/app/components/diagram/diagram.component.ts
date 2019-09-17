@@ -27,13 +27,23 @@ export class DiagramComponent implements OnInit {
   private g: any;
   private tree: any;
   private nodes: any;
-  private loads : Array<Load>;
+  private allocatedLoads : Array<Load>;
+  private notAllocatedLoads : Array<Load>;
+  private supplyAllocatedLoads : Array<Load>;
   private treeData: Array<Node> = [];
 
   constructor(private store: Store<fromRoot.State>, public dialog: MatDialog) { 
 
     store.select(fromRoot.getAllocatedLoads).subscribe(data => {
-      this.loads = data}
+      this.allocatedLoads = data}
+    );
+
+    store.select(fromRoot.getNotAllocatedLoads).subscribe(data => {
+      this.notAllocatedLoads = data}
+    );
+
+    store.select(fromRoot.getSupplyAllocatedLoads).subscribe(data => {
+      this.supplyAllocatedLoads = data}
     );
 
     this.width = 660 - this.margin.left - this.margin.right;
@@ -45,14 +55,21 @@ export class DiagramComponent implements OnInit {
     this.initSvg();
     this.initData();
     this.initLinks();
+    this.initTest();
     this.initNodes();
     this.initZoom();
     this.initDrugAndDrop();
   }
 
   private initData() {
-    this.treeData = this.loads.map(function(element){return new Node(element)});
-    this.nodes = d3.hierarchy(this.treeData[0])
+
+    let root = { children: [] };
+
+    root.children = root.children.concat(this.notAllocatedLoads.map(function(element){return new Node(element)}));
+    root.children = root.children.concat(this.allocatedLoads.map(function(element){return new Node(element)}));
+    root.children = root.children.concat(this.supplyAllocatedLoads.map(function(element){return new Node(element)}));
+
+    this.nodes = d3.hierarchy(root)
     this.nodes = this.tree(this.nodes); 
   }
 
@@ -70,12 +87,37 @@ export class DiagramComponent implements OnInit {
       .enter()
       .append('path')
       .attr("class", "link")
+      .attr("id", function(d,i){return 'path'+i})
       .attr("d", function(d) {
         return "M" + (d.source.x + 25) + "," + (d.source.y + 24)
         + "C" + (d.source.x + 25) + "," + (d.source.y + d.target.y) / 2
         + " " + (d.target.x + 25) + "," +  (d.source.y + d.target.y) / 2
         + " "+ (d.target.x + 25) + "," + d.target.y;
-      });
+      })
+      .attr('id', function(d,i) {return 'path'+i})
+  }
+
+  private initTest() {
+
+    var pathlabels = this.g.selectAll(".pathLabel")
+    .data(this.nodes.links(this.nodes))
+    .enter()
+    .append('text')
+    .attr("class", "pathLabel")
+    .attr("class", "pathLabel")
+    .attr("id", function(d,i){return 'pathLabel'+i})
+    .attr("dx", 75)
+    .attr("dy", 0)
+    .attr("font-size", 25)
+    .attr("fill", "#aaa")
+
+    pathlabels.append('textPath')
+    .attr('xlink:href',function(d,i) {return '#path'+i})
+    .text('+')
+    .on('click', (d) => {
+      this.removeLoad(d.source.data.load);
+      d3.select(d3.event.target.attributes["href"].nodeValue).remove();
+    });
   }
 
   private initNodes(){
@@ -99,11 +141,22 @@ export class DiagramComponent implements OnInit {
       .attr("x", function(d) { return 25 })
       .attr("y", function(d) { return d.children ? -20 : 40; })
       .style("text-anchor", "middle")
-      .text(function(d) { return d.data.load.$name; });
+      .text(function(d) { return d.data.load ? d.data.load.$name : "" });
   }
 
-  private removeLink() {
-
+  private removeLoad(load: Load) {
+    let newLoad = new Load(
+      load.$id,
+      load.$name,
+      load.$area,
+      load.$purpose,
+      load.$subPurpose,
+      load.$loadType,
+      load.$childrenLoads,
+      null,
+      load.$isBusbar
+    )
+    this.store.dispatch(new ChangeLoadState({oldLoad: load, newLoad: newLoad}))
   }
 
   private addLink() {
