@@ -1,4 +1,4 @@
-.node circle {
+.node rect {
     fill: #fff;
     stroke: steelblue;
     stroke-width: 3px;
@@ -9,9 +9,32 @@
   .node--internal text {
     text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
   }
+
+  .rootNode {
+    fill: none;
+    visibility: "hidden";
+    pointer-events: none;
+  }
   
   .link {
     fill: none;
     stroke: #ccc;
     stroke-width: 2px;
+  }
+
+  .rootLink {
+    fill: none;
+    visibility: "hidden";
+    pointer-events: none;
+  }
+
+  .pathLabel {
+    font-size: 25;
+    fill: #aaa;
+  }
+
+  .rootPathLabel {
+    fill: none;
+    visibility: "hidden";
+    pointer-events: none;
   }

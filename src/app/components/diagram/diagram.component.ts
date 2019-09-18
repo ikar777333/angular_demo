@@ -7,7 +7,7 @@ import { LoadTypes } from "../../models/LoadTypes.enum"
 import { ChangeLoadState } from "../../store/actions/loads"
 import * as fromRoot from '../../store/reducers';
 import { LoadDialogComponent } from "../LoadDialog/LoadDialog.component"
-import { ChooseBusbarDialogComponent } from "../ChooseBusbarDialog/ChooseBusbarDialog.component"
+import { ErrorDialogComponent } from "../error-dialog/error-dialog.component"
 
 import * as d3 from 'd3';
 
@@ -30,7 +30,6 @@ export class DiagramComponent implements OnInit {
   private allocatedLoads : Array<Load>;
   private notAllocatedLoads : Array<Load>;
   private supplyAllocatedLoads : Array<Load>;
-  private treeData: Array<Node> = [];
 
   constructor(private store: Store<fromRoot.State>, public dialog: MatDialog) { 
 
@@ -46,7 +45,7 @@ export class DiagramComponent implements OnInit {
       this.supplyAllocatedLoads = data}
     );
 
-    this.width = 660 - this.margin.left - this.margin.right;
+    this.width = 925 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
     this.tree = d3.tree().size([this.width, this.height]);
   }
@@ -55,20 +54,16 @@ export class DiagramComponent implements OnInit {
     this.initSvg();
     this.initData();
     this.initLinks();
-    this.initTest();
     this.initNodes();
     this.initZoom();
     this.initDrugAndDrop();
   }
 
   private initData() {
-
     let root = { children: [] };
-
     root.children = root.children.concat(this.notAllocatedLoads.map(function(element){return new Node(element)}));
     root.children = root.children.concat(this.allocatedLoads.map(function(element){return new Node(element)}));
     root.children = root.children.concat(this.supplyAllocatedLoads.map(function(element){return new Node(element)}));
-
     this.nodes = d3.hierarchy(root)
     this.nodes = this.tree(this.nodes); 
   }
@@ -82,11 +77,17 @@ export class DiagramComponent implements OnInit {
   }
 
   private initLinks() {
+
+    this.g.selectAll('.link').remove();
+    this.g.selectAll('.rootLink').remove();
+    this.g.selectAll('.pathLabel').remove();
+    this.g.selectAll('.rootPathLabel').remove();
+
     this.g.selectAll(".link")
       .data(this.nodes.links(this.nodes))
       .enter()
       .append('path')
-      .attr("class", "link")
+      .attr("class", function(d) {return d.source.data.load ? "link" : "rootLink"})
       .attr("id", function(d,i){return 'path'+i})
       .attr("d", function(d) {
         return "M" + (d.source.x + 25) + "," + (d.source.y + 24)
@@ -94,39 +95,36 @@ export class DiagramComponent implements OnInit {
         + " " + (d.target.x + 25) + "," +  (d.source.y + d.target.y) / 2
         + " "+ (d.target.x + 25) + "," + d.target.y;
       })
-      .attr('id', function(d,i) {return 'path'+i})
-  }
-
-  private initTest() {
+      .attr('id', function(d,i) {return 'path'+i});
 
     var pathlabels = this.g.selectAll(".pathLabel")
-    .data(this.nodes.links(this.nodes))
-    .enter()
-    .append('text')
-    .attr("class", "pathLabel")
-    .attr("class", "pathLabel")
-    .attr("id", function(d,i){return 'pathLabel'+i})
-    .attr("dx", 75)
-    .attr("dy", 0)
-    .attr("font-size", 25)
-    .attr("fill", "#aaa")
-
+      .data(this.nodes.links(this.nodes))
+      .enter()
+      .append('text')
+      .attr("class", function(d) {return d.source.data.load ? "pathLabel" : "rootPathLabel"})
+      .attr("id", function(d,i){return 'pathLabel'+i})
+      .attr("dx", 10)
+      .attr("dy", 0)
+  
     pathlabels.append('textPath')
-    .attr('xlink:href',function(d,i) {return '#path'+i})
-    .text('+')
-    .on('click', (d) => {
-      this.removeLoad(d.source.data.load);
-      d3.select(d3.event.target.attributes["href"].nodeValue).remove();
-    });
+      .attr('xlink:href',function(d,i) {return '#path'+i})
+      .text('+')
+      .on('click', (d) => {
+        this.removeLoad(d.source.data.load);
+        d3.select(d3.event.target.attributes["href"].nodeValue).remove();
+      });
   }
 
   private initNodes(){
+
+    this.g.selectAll('.node').remove();
+    this.g.selectAll('.rootNode').remove();
+
     var node = this.g.selectAll(".node")
     .data(this.nodes.descendants())
     .enter().append("g")
     .attr("class", function(d) { 
-      return "node" + 
-        (d.children ? " node--internal" : " node--leaf"); })
+      return (d.data.load ? "node node--internal" : " rootNode"); })
     .attr("transform", function(d) { 
       return "translate(" + d.x + "," + d.y + ")"; });
 
@@ -159,13 +157,7 @@ export class DiagramComponent implements OnInit {
     this.store.dispatch(new ChangeLoadState({oldLoad: load, newLoad: newLoad}))
   }
 
-  private addLink() {
-
-  }
-
   private updateDiagram() {
-    this.svg.selectAll('.node').remove();
-    this.svg.selectAll('.link').remove();
     this.initData();
     this.initLinks();
     this.initNodes();
@@ -176,6 +168,16 @@ export class DiagramComponent implements OnInit {
     const dialogRef = this.dialog.open(LoadDialogComponent, {
       width: '450px',
       data: load
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.updateDiagram();
+    });
+  }
+
+  private openErrorDialog(message: string): void{
+    const dialogRef = this.dialog.open(ErrorDialogComponent, {
+      width: '450px',
+      data: message
     });
     dialogRef.afterClosed().subscribe(result => {
       this.updateDiagram();
@@ -196,18 +198,65 @@ export class DiagramComponent implements OnInit {
     .on("drag", function(d: any) {
       d3.select(this).attr("transform", "translate(" + (d.x = d3.event.x) + "," + (d.y = d3.event.y) + ")");
     })
-    .on("start.render drag.render end.render", () =>
-        this.updateLink()
-    ));
+    .on("end", (d: any) => {
+        let node = this.overlay(d);
+        if(this.isValide(d, node)) {
+          let load = d.data.load;
+          let newLoad = new Load(
+            load.$id,
+            load.$name,
+            load.$area,
+            load.$purpose,
+            load.$subPurpose,
+            load.$loadType,
+            load.$childrenLoads,
+            node.data.load.$id,
+            load.$isBusbar
+          )
+          this.store.dispatch(new ChangeLoadState({oldLoad: load, newLoad: newLoad}))
+          this.updateDiagram();
+        }
+    })
+    .on("start.render drag.render end.render", (d) => {  
+        this.initLinks()
+    }));
   }
 
-  private onOverlay() {
-    
+  private isValide(d, node) {
+    if(node === undefined)
+      return false;
+    var load = d.data.load;
+    var load2 = node.data.load;
+    if(load.$parentId !== null){
+      console.log("err1")
+      return false;
+    } else if (load2.$parentId === null && !load2.$isBusbar) {
+      console.log("err2")
+      return false;
+    } else if (load2.$isSupply) {
+      console.log("err3")
+      return false;
+    } else if (load.$isSupply && !load2.$isBusbar) {
+      console.log("err4")
+      return false;
+    }
+    return true;
   }
 
-  private updateLink() {
-    this.svg.selectAll('.link').remove();
-    this.initLinks();
+  private overlay(d) {
+    let nodes = this.nodes.descendants().filter(function(element) {
+      return element.data.load && element.data.load.$name !== d.data.load.$name;
+    })
+
+    return nodes.find(function(element){
+      let x = Math.abs(d.x - element.x);
+      let y = Math.abs(d.y - element.y);
+
+      if((x < 50) && (y < 24))
+        return true;
+      else 
+        return false;
+    })
   }
 
 }
