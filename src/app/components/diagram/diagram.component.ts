@@ -8,9 +8,12 @@ import { ChangeLoadState } from "../../store/actions/loads"
 import * as fromRoot from '../../store/reducers';
 import { LoadDialogComponent } from "../LoadDialog/LoadDialog.component"
 import { ErrorDialogComponent } from "../error-dialog/error-dialog.component"
-
 import * as d3 from 'd3';
 
+enum Orientation {
+  TOP_TO_BOTTOM,
+  BOTTOM_TO_TOP
+}
 
 @Component({
   selector: 'app-diagram',
@@ -21,15 +24,19 @@ import * as d3 from 'd3';
 export class DiagramComponent implements OnInit {
 
   private margin = {top: 40, right: 0, bottom: 50, left: 0};
-  private width: number;
-  private height: number;
-  private svg: any;
-  private g: any;
-  private tree: any;
-  private nodes: any;
-  private allocatedLoads : Array<Load>;
-  private notAllocatedLoads : Array<Load>;
-  private supplyAllocatedLoads : Array<Load>;
+  private NODE_WIDTH:  number = 50;
+  private NODE_HEIGTH: number = 24;
+  private width:    number;
+  private height:   number;
+  private oldX:     number;
+  private oldY:     number;
+  private svg:      any;
+  private g:        any;
+  private tree:     any;
+  private nodes:    any;
+  private allocatedLoads:       Array<Load>;
+  private notAllocatedLoads:    Array<Load>;
+  private supplyAllocatedLoads: Array<Load>;
 
   constructor(private store: Store<fromRoot.State>, public dialog: MatDialog) { 
 
@@ -61,9 +68,17 @@ export class DiagramComponent implements OnInit {
 
   private initData() {
     let root = { children: [] };
+
+    let supplyAllocatedNodes = this.supplyAllocatedLoads.map(function(element){return new Node(element)})
+    let allocatedNodes = this.allocatedLoads.map(function(element){return new Node(element)})
+    allocatedNodes.forEach(function(busbar) { 
+      busbar.children = busbar.children.concat(supplyAllocatedNodes.filter(function(element){
+        return element.load.$parentId === busbar.load.$id}
+      ));
+    })
+
+    root.children = root.children.concat(allocatedNodes);
     root.children = root.children.concat(this.notAllocatedLoads.map(function(element){return new Node(element)}));
-    root.children = root.children.concat(this.allocatedLoads.map(function(element){return new Node(element)}));
-    root.children = root.children.concat(this.supplyAllocatedLoads.map(function(element){return new Node(element)}));
     this.nodes = d3.hierarchy(root)
     this.nodes = this.tree(this.nodes); 
   }
@@ -89,11 +104,11 @@ export class DiagramComponent implements OnInit {
       .append('path')
       .attr("class", function(d) {return d.source.data.load ? "link" : "rootLink"})
       .attr("id", function(d,i){return 'path'+i})
-      .attr("d", function(d) {
-        return "M" + (d.source.x + 25) + "," + (d.source.y + 24)
-        + "C" + (d.source.x + 25) + "," + (d.source.y + d.target.y) / 2
-        + " " + (d.target.x + 25) + "," +  (d.source.y + d.target.y) / 2
-        + " "+ (d.target.x + 25) + "," + d.target.y;
+      .attr("d", (d) => {
+        if(d.target.data.load.$isSupply && d.target.data.load.parentId !== null)
+          return this.getOrientationForLink(d, Orientation.BOTTOM_TO_TOP)
+        else 
+          return this.getOrientationForLink(d, Orientation.TOP_TO_BOTTOM)
       })
       .attr('id', function(d,i) {return 'path'+i});
 
@@ -110,12 +125,21 @@ export class DiagramComponent implements OnInit {
       .attr('xlink:href',function(d,i) {return '#path'+i})
       .text('+')
       .on('click', (d) => {
-        this.removeLoad(d.source.data.load);
-        d3.select(d3.event.target.attributes["href"].nodeValue).remove();
+        this.moveLoadToNotAllocatedLoads(d);
       });
   }
 
-  private initNodes(){
+  private updateLinks() {
+    this.g.selectAll(".link")
+    .attr("d", (d) => {
+      if(d.target.data.load.$isSupply && d.target.data.load.parentId !== null)
+        return this.getOrientationForLink(d, Orientation.BOTTOM_TO_TOP)
+      else 
+        return this.getOrientationForLink(d, Orientation.TOP_TO_BOTTOM)
+    })
+  }
+
+  private initNodes() {
 
     this.g.selectAll('.node').remove();
     this.g.selectAll('.rootNode').remove();
@@ -125,24 +149,98 @@ export class DiagramComponent implements OnInit {
     .enter().append("g")
     .attr("class", function(d) { 
       return (d.data.load ? "node node--internal" : " rootNode"); })
-    .attr("transform", function(d) { 
-      return "translate(" + d.x + "," + d.y + ")"; });
+    .attr("transform", (d) => { 
+      if(d.data.load && d.data.load.$isSupply) 
+        return this.getOrientationForNode(d, Orientation.BOTTOM_TO_TOP);
+      else 
+        return this.getOrientationForNode(d, Orientation.TOP_TO_BOTTOM);  
+    });
 
     node.append("rect")
-      .attr("width", 50)
-      .attr("height", 24)
+      .attr("width", this.NODE_WIDTH)
+      .attr("height", this.NODE_HEIGTH)
       .on('click', (d) => {
         this.openLoadDialog(d.data.load);})
 
     node.append("text")
       .attr("dy", ".35em")
-      .attr("x", function(d) { return 25 })
+      .attr("x", function(d) { return this.NODE_WIDTH / 2 })
       .attr("y", function(d) { return d.children ? -20 : 40; })
       .style("text-anchor", "middle")
       .text(function(d) { return d.data.load ? d.data.load.$name : "" });
   }
 
-  private removeLoad(load: Load) {
+  private updateNodes() {
+    this.g.selectAll(".node")
+    .attr("transform", (d) => { 
+      if(d.data.load && d.data.load.$isSupply) 
+        return this.getOrientationForNode(d, Orientation.BOTTOM_TO_TOP);
+      else 
+        return this.getOrientationForNode(d, Orientation.TOP_TO_BOTTOM);  
+    });
+  }
+
+  private getOrientationForNode(d: any, orientation: Orientation) {
+
+    let x, y;
+
+    switch(orientation) {
+      case Orientation.TOP_TO_BOTTOM: {
+        x = d.x;
+        y = d.y; 
+        break;
+      }
+      case Orientation.BOTTOM_TO_TOP: {
+        x = d.x;
+        y = d.y / 4;
+        break;
+      }
+      default: {
+        x = d.x;
+        y = d.y;
+        break;
+      }
+    }
+
+    return "translate(" + x + "," + y + ")"
+  }
+
+  private getOrientationForLink(d: any, orientation: Orientation) {
+
+    let targetX, targetY, sourceX, sourceY;
+
+    switch(orientation) {
+      case Orientation.BOTTOM_TO_TOP: {
+        targetX = d.target.x + (this.NODE_WIDTH / 2);
+        targetY = (d.target.y + this.NODE_HEIGTH) / 2;
+        sourceX = d.source.x + (this.NODE_WIDTH / 2);
+        sourceY = (d.source.y + this.NODE_HEIGTH) / 2;
+        break;
+      }
+      case Orientation.TOP_TO_BOTTOM: {
+        targetX = d.target.x + (this.NODE_WIDTH / 2);
+        targetY = d.target.y + this.NODE_HEIGTH;
+        sourceX = d.source.x + (this.NODE_WIDTH / 2);
+        sourceY = d.source.y + this.NODE_HEIGTH;
+        break;
+      }
+      default: {
+        targetX = d.target.x + (this.NODE_WIDTH / 2);
+        targetY = d.target.y + this.NODE_HEIGTH;
+        sourceX = d.source.x + (this.NODE_WIDTH / 2);
+        sourceY = d.source.y + this.NODE_HEIGTH;
+        break;
+      }
+    }
+
+    return  "M" + sourceX + "," + sourceY
+          + "C" + sourceX + "," + (sourceY + targetY) / 2
+          + " " + targetX + "," + (sourceY + targetY) / 2
+          + " "+  targetX + "," + targetY;
+  } 
+
+  private moveLoadToNotAllocatedLoads(d: any) {
+    let load = d.source.data.load
     let newLoad = new Load(
       load.$id,
       load.$name,
@@ -155,6 +253,7 @@ export class DiagramComponent implements OnInit {
       load.$isBusbar
     )
     this.store.dispatch(new ChangeLoadState({oldLoad: load, newLoad: newLoad}))
+    d3.select(d3.event.target.attributes["href"].nodeValue).remove();
   }
 
   private updateDiagram() {
@@ -179,9 +278,6 @@ export class DiagramComponent implements OnInit {
       width: '450px',
       data: message
     });
-    dialogRef.afterClosed().subscribe(result => {
-      this.updateDiagram();
-    });
   }
 
   private initZoom() {
@@ -195,6 +291,10 @@ export class DiagramComponent implements OnInit {
 
   private initDrugAndDrop() {
     this.svg.selectAll(".node").call(d3.drag()
+    .on("start", (d: any) => {
+      this.oldX = d.x;
+      this.oldY = d.y;
+    })
     .on("drag", function(d: any) {
       d3.select(this).attr("transform", "translate(" + (d.x = d3.event.x) + "," + (d.y = d3.event.y) + ")");
     })
@@ -215,10 +315,14 @@ export class DiagramComponent implements OnInit {
           )
           this.store.dispatch(new ChangeLoadState({oldLoad: load, newLoad: newLoad}))
           this.updateDiagram();
+        } else {
+          d.x = this.oldX;
+          d.y = this.oldY;
+          this.updateNodes();
         }
     })
     .on("start.render drag.render end.render", (d) => {  
-        this.initLinks()
+        this.updateLinks()
     }));
   }
 
@@ -228,16 +332,16 @@ export class DiagramComponent implements OnInit {
     var load = d.data.load;
     var load2 = node.data.load;
     if(load.$parentId !== null){
-      console.log("err1")
+      this.openErrorDialog("err1")
       return false;
     } else if (load2.$parentId === null && !load2.$isBusbar) {
-      console.log("err2")
+      this.openErrorDialog("err2")
       return false;
     } else if (load2.$isSupply) {
-      console.log("err3")
+      this.openErrorDialog("err3")
       return false;
     } else if (load.$isSupply && !load2.$isBusbar) {
-      console.log("err4")
+      this.openErrorDialog("err4")
       return false;
     }
     return true;

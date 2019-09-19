@@ -29,6 +29,7 @@ import { DiagramComponent } from './components/diagram/diagram.component';
 import { TreeComponent } from './components/tree/tree.component';
 import { LoadDialogComponent } from './components/LoadDialog/LoadDialog.component';
 import { ChooseBusbarDialogComponent } from './components/ChooseBusbarDialog/ChooseBusbarDialog.component';
+import { ErrorDialogComponent } from './components/error-dialog/error-dialog.component'
 import { environment } from '../environments/environment';
 import * as fromRoot from './store/reducers/index'; 
 
@@ -39,7 +40,8 @@ import * as fromRoot from './store/reducers/index';
     DiagramComponent,
     TreeComponent,
     LoadDialogComponent,
-    ChooseBusbarDialogComponent
+    ChooseBusbarDialogComponent,
+    ErrorDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -69,7 +71,8 @@ import * as fromRoot from './store/reducers/index';
   providers: [],
   entryComponents: [
     LoadDialogComponent,
-    ChooseBusbarDialogComponent
+    ChooseBusbarDialogComponent,
+    ErrorDialogComponent
   ],
   bootstrap: [
     AppComponent,
