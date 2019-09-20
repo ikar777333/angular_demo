@@ -1,19 +1,29 @@
+
+rect { 
+  stroke: black;
+  stroke-width: 1px;
+}
+
 .node rect {
-    fill: #fff;
-    stroke: steelblue;
-    stroke-width: 3px;
-  }
-  
-  .node text { font: 12px sans-serif; }
-  
-  .node--internal text {
-    text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+    fill: #98C1D9;
   }
 
-  .rootNode {
+  .nodeBusbar rect {
+    fill: #EE6C4D;
+    pointer-events: none;
+  }
+
+  .nodeSupply rect {
+    fill: #E0FBFC;
+  }
+  
+  text { font: 12px sans-serif; }
+
+  .rootNode rect {
     fill: none;
     visibility: "hidden";
     pointer-events: none;
+    stroke: white;
   }
   
   .link {
