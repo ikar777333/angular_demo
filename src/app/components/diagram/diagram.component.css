@@ -10,7 +10,7 @@ rect {
 
   .nodeBusbar rect {
     fill: #EE6C4D;
-    pointer-events: none;
+   
   }
 
   .nodeSupply rect {
@@ -22,7 +22,7 @@ rect {
   .rootNode rect {
     fill: none;
     visibility: "hidden";
-    pointer-events: none;
+    
     stroke: white;
   }
   

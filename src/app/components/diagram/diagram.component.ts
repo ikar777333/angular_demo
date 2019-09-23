@@ -22,15 +22,18 @@ class Tree {
   constructor(treeBottom, treeTop) {
     this.treeBottom = treeBottom;
     this.treeTop =    treeTop;
+    this.treeTop.links().forEach(function(element) {
+      element.y = element.depth * 180;
+    })
   }
 
   public links() {
-    return this.treeBottom.links()/*.concat(this.treeTop.links())*/;
+    return this.treeBottom.links().concat(this.treeTop.links());
   }
 
   public descendants() {
-    return this.treeBottom.descendants()/*.concat(this.treeTop.descendants()
-      .filter(function(element){return !element.data.load || element.data.load && element.data.load.$isBusbar !== true;}));*/
+    return this.treeBottom.descendants().concat(this.treeTop.descendants()
+      .filter(function(element){return !element.data.load || element.data.load && element.data.load.$isBusbar !== true;}));
   }
 }
 
@@ -45,14 +48,14 @@ export class DiagramComponent implements OnInit {
   private margin = {top: 40, right: 0, bottom: 50, left: 0};
   private NODE_WIDTH:  number = 50;
   private NODE_HEIGTH: number = 24;
-  private width:    number;
-  private height:   number;
-  private oldX:     number;
-  private oldY:     number;
-  private svg:      any;
-  private g:        any;
-  private treemap:  any;
-  private tree:     Tree;
+  private width:     number;
+  private height:    number;
+  private oldX:      number;
+  private oldY:      number;
+  private svg:       any;
+  private g:         any;
+  private treemap:   any;
+  private tree:      Tree;
   private allocatedLoads:       Array<Load>;
   private notAllocatedLoads:    Array<Load>;
   private supplyAllocatedLoads: Array<Load>;
@@ -89,29 +92,31 @@ export class DiagramComponent implements OnInit {
     let root:     any = { children: [] };
     let rootTop:  any = { children: [] };
 
-    /*let supplyAllocatedNodes = this.supplyAllocatedLoads.map(function(element){return new Node(element)})
+    let supplyAllocatedNodes = this.supplyAllocatedLoads.map(function(element){return new Node(element)})
     let allocatedNodes = this.allocatedLoads.map(function(element){return new Node(element)})
-    allocatedNodes.forEach(function(busbar) { 
+    allocatedNodes = allocatedNodes.map(function(busbar) { 
       busbar.children = supplyAllocatedNodes.filter(function(element){
         return element.load.$parentId === busbar.load.$id}
       );
-    })*/
+      return busbar;
+    })
+
     root.children = root.children.concat(this.allocatedLoads.map(function(element){return new Node(element)}));
     root.children = root.children.concat(this.notAllocatedLoads.map(function(element){return new Node(element)}));
-    root.children = root.children.concat(this.supplyAllocatedLoads.map(function(element){return new Node(element)}));
     root = d3.hierarchy(root)
     root = this.treemap(root)
 
-   /* rootTop.children = rootTop.children.concat(allocatedNodes)
-    rootTop = d3.hierarchy(rootTop)
-    rootTop = this.treemap(rootTop);*/
+    rootTop.children = allocatedNodes;
+    rootTop.children = rootTop.children.concat(this.notAllocatedLoads.map(function(element){return new Node(element)}));
+    rootTop = d3.hierarchy(rootTop);
+    rootTop = this.treemap(rootTop);
 
     this.tree = new Tree(root, rootTop);
   }
 
   private initSvg() {
     this.svg = d3.select("svg")
-      .attr("width", this.width + this.margin.left + this.margin.right)
+      .attr("width", "100%")
       .attr("height", this.height + this.margin.top + this.margin.bottom)
     this.g = this.svg.append("g")
       .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
@@ -169,6 +174,8 @@ export class DiagramComponent implements OnInit {
 
     this.g.selectAll('.node').remove();
     this.g.selectAll('.rootNode').remove();
+    this.g.selectAll('.nodeSupply').remove();
+    this.g.selectAll('.nodeBusbar').remove();
 
     var node = this.g.selectAll(".node")
     .data(this.tree.descendants())
@@ -200,7 +207,13 @@ export class DiagramComponent implements OnInit {
       .attr("x", function(d) { return 25 })
       .attr("y", function(d) { return 14 })
       .style("text-anchor", "middle")
-      .text(function(d) { return d.data.load ? d.data.load.$name : "" });
+      .text(function(d) { return d.data.load ? d.data.load.$name : "" })
+      .on('click', (d) => {
+        this.openLoadDialog(d.data.load);});
+
+    node.exit().attr("transform", function(d) {
+      return "translate(" + d.parent.y + "," + d.parent.x + ")";
+    }).remove();
   }
 
   private updateNodes() {
@@ -225,7 +238,7 @@ export class DiagramComponent implements OnInit {
       }
       case Orientation.BOTTOM_TO_TOP: {
         x = d.x;
-        y = d.y / 4;
+        y = this.height - (d.y - (-this.NODE_HEIGTH * 3));
         break;
       }
       default: {
@@ -245,9 +258,9 @@ export class DiagramComponent implements OnInit {
     switch(orientation) {
       case Orientation.BOTTOM_TO_TOP: {
         targetX = d.target.x + (this.NODE_WIDTH / 2);
-        targetY = (d.target.y + this.NODE_HEIGTH) / 2;
+        targetY = this.height - (d.target.y - (-this.NODE_HEIGTH * 3)) ;
         sourceX = d.source.x + (this.NODE_WIDTH / 2);
-        sourceY = (d.source.y + this.NODE_HEIGTH) / 2;
+        sourceY = this.height - (d.source.y - (-this.NODE_HEIGTH * 3)) ;
         break;
       }
       case Orientation.TOP_TO_BOTTOM: {
@@ -273,7 +286,7 @@ export class DiagramComponent implements OnInit {
   } 
 
   private moveLoadToNotAllocatedLoads(d: any) {
-    let load = d.source.data.load
+    let load = d.target.data.load
     let newLoad = new Load(
       load.$id,
       load.$name,
