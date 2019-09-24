@@ -36,6 +36,19 @@ export const initialState: State = {
             LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, [], 10, false),
         ], 4, false),
     ], null, true),
+    new Load(12, "test12", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+    LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, [
+      new Load(13, "test13", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, [
+          new Load(14, "test14", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+            LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, [], 13, false),
+        ], 12, false),
+      new Load(15, "test15", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+        LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, [
+          new Load(16, "test16", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 
+            LoadSubPurposes.SUB_PURPOSE1, LoadTypes.TYPE1, [], 15, false),
+        ], 12, false),
+    ], null, true),
   ],
   supplyAllocatedLoads: [
     new Load(7, "test7", LoadAreas.AREA1, LoadPurposes.PURPOSE1, 

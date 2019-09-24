@@ -15,6 +15,9 @@ enum Orientation {
   BOTTOM_TO_TOP
 }
 
+let NODE_WIDTH:  number = 50;
+let NODE_HEIGTH: number = 24;
+
 class Tree {
   treeBottom: any;
   treeTop:    any;
@@ -22,18 +25,15 @@ class Tree {
   constructor(treeBottom, treeTop) {
     this.treeBottom = treeBottom;
     this.treeTop =    treeTop;
-    this.treeTop.links().forEach(function(element) {
-      element.y = element.depth * 180;
-    })
   }
 
   public links() {
-    return this.treeBottom.links().concat(this.treeTop.links());
+    return this.treeBottom.links()/*.concat(this.treeTop.links());*/
   }
 
   public descendants() {
-    return this.treeBottom.descendants().concat(this.treeTop.descendants()
-      .filter(function(element){return !element.data.load || element.data.load && element.data.load.$isBusbar !== true;}));
+    return this.treeBottom.descendants()/*.concat(this.treeTop.descendants()
+      .filter(function(element){return !element.data.load || element.data.load.$isBusbar !== true && element.data.load.$isSupply === true;}));*/
   }
 }
 
@@ -46,8 +46,6 @@ class Tree {
 export class DiagramComponent implements OnInit {
 
   private margin = {top: 40, right: 0, bottom: 50, left: 0};
-  private NODE_WIDTH:  number = 50;
-  private NODE_HEIGTH: number = 24;
   private width:     number;
   private height:    number;
   private oldX:      number;
@@ -76,7 +74,7 @@ export class DiagramComponent implements OnInit {
 
     this.width = 925 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
-    this.treemap = d3.tree().size([this.width, this.height]);
+    this.treemap = d3.tree().size([this.width, this.height / 2]);
   }
 
   ngOnInit() {
@@ -94,22 +92,17 @@ export class DiagramComponent implements OnInit {
 
     let supplyAllocatedNodes = this.supplyAllocatedLoads.map(function(element){return new Node(element)})
     let allocatedNodes = this.allocatedLoads.map(function(element){return new Node(element)})
-    allocatedNodes = allocatedNodes.map(function(busbar) { 
-      busbar.children = supplyAllocatedNodes.filter(function(element){
+    console.log(allocatedNodes)
+    allocatedNodes.forEach(busbar => {
+      busbar.children = busbar.children.concat(supplyAllocatedNodes.filter(function(element){
         return element.load.$parentId === busbar.load.$id}
-      );
-      return busbar;
-    })
+      ));
+    });
 
-    root.children = root.children.concat(this.allocatedLoads.map(function(element){return new Node(element)}));
+    root.children = root.children.concat(allocatedNodes)
     root.children = root.children.concat(this.notAllocatedLoads.map(function(element){return new Node(element)}));
     root = d3.hierarchy(root)
     root = this.treemap(root)
-
-    rootTop.children = allocatedNodes;
-    rootTop.children = rootTop.children.concat(this.notAllocatedLoads.map(function(element){return new Node(element)}));
-    rootTop = d3.hierarchy(rootTop);
-    rootTop = this.treemap(rootTop);
 
     this.tree = new Tree(root, rootTop);
   }
@@ -149,7 +142,7 @@ export class DiagramComponent implements OnInit {
       .append('text')
       .attr("class", function(d) {return d.source.data.load ? "pathLabel" : "rootPathLabel"})
       .attr("id", function(d,i){return 'pathLabel'+i})
-      .attr("dx", 10)
+      .attr("dx", 25)
       .attr("dy", 0)
   
     pathlabels.append('textPath')
@@ -198,14 +191,14 @@ export class DiagramComponent implements OnInit {
     });
 
     node.append("rect")
-      .attr("width", this.NODE_WIDTH)
-      .attr("height", this.NODE_HEIGTH)
+      .attr("width", NODE_WIDTH)
+      .attr("height", NODE_HEIGTH)
       .on('click', (d) => {
         this.openLoadDialog(d.data.load);})
 
     node.append("text")
-      .attr("x", function(d) { return 25 })
-      .attr("y", function(d) { return 14 })
+      .attr("x", (d) => { return NODE_WIDTH / 2 })
+      .attr("y", (d) => { return NODE_HEIGTH / 2 })
       .style("text-anchor", "middle")
       .text(function(d) { return d.data.load ? d.data.load.$name : "" })
       .on('click', (d) => {
@@ -238,7 +231,7 @@ export class DiagramComponent implements OnInit {
       }
       case Orientation.BOTTOM_TO_TOP: {
         x = d.x;
-        y = this.height - (d.y - (-this.NODE_HEIGTH * 3));
+        y = this.height/2 - (d.y - (-NODE_HEIGTH*3));
         break;
       }
       default: {
@@ -257,24 +250,24 @@ export class DiagramComponent implements OnInit {
 
     switch(orientation) {
       case Orientation.BOTTOM_TO_TOP: {
-        targetX = d.target.x + (this.NODE_WIDTH / 2);
-        targetY = this.height - (d.target.y - (-this.NODE_HEIGTH * 3)) ;
-        sourceX = d.source.x + (this.NODE_WIDTH / 2);
-        sourceY = this.height - (d.source.y - (-this.NODE_HEIGTH * 3)) ;
+        targetX = d.target.x + (NODE_WIDTH / 2);
+        targetY = this.height /2 - (d.target.y - (-NODE_HEIGTH * 2.5)) ;
+        sourceX = d.source.x + (NODE_WIDTH / 2);
+        sourceY = this.height /2 - (d.source.y - (-NODE_HEIGTH * 2.5)) ;
         break;
       }
       case Orientation.TOP_TO_BOTTOM: {
-        targetX = d.target.x + (this.NODE_WIDTH / 2);
-        targetY = d.target.y + this.NODE_HEIGTH;
-        sourceX = d.source.x + (this.NODE_WIDTH / 2);
-        sourceY = d.source.y + this.NODE_HEIGTH;
+        targetX = d.target.x + (NODE_WIDTH / 2);
+        targetY = d.target.y + NODE_HEIGTH;
+        sourceX = d.source.x + (NODE_WIDTH / 2);
+        sourceY = d.source.y + NODE_HEIGTH;
         break;
       }
       default: {
-        targetX = d.target.x + (this.NODE_WIDTH / 2);
-        targetY = d.target.y + this.NODE_HEIGTH;
-        sourceX = d.source.x + (this.NODE_WIDTH / 2);
-        sourceY = d.source.y + this.NODE_HEIGTH;
+        targetX = d.target.x + (NODE_WIDTH / 2);
+        targetY = d.target.y + NODE_HEIGTH;
+        sourceX = d.source.x + (NODE_WIDTH / 2);
+        sourceY = d.source.y + NODE_HEIGTH;
         break;
       }
     }
@@ -402,7 +395,7 @@ export class DiagramComponent implements OnInit {
       let x = Math.abs(d.x - element.x);
       let y = Math.abs(d.y - element.y);
 
-      if((x < 50) && (y < 24))
+      if((x < NODE_WIDTH) && (y < NODE_HEIGTH))
         return true;
       else 
         return false;
