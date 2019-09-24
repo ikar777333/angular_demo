@@ -31,4 +31,12 @@ https://medium.com/@demyanyuk/%D1%80%D0%B5%D0%B0%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D
 
 https://github.com/GarryBrown/ngrx-films-list/blob/master/src/app/store/reducers/films.ts  
 
-https://stackblitz.com/edit/angular-e3ajdt
+https://stackblitz.com/edit/angular-e3ajdt  
+
+https://blockbuilder.org/search  
+
+https://bl.ocks.org/d3noob/b024fcce8b4b9264011a1c3e7c7d70dc  
+
+https://observablehq.com/@d3/d3-path?collection=@d3/d3-path  
+
+https://bost.ocks.org/mike/join/

@@ -24,24 +24,24 @@ import { DragDropModule } from '@angular/cdk/drag-drop'
 import { Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './components/home/home.component';
 import { NavComponent } from './components/nav/nav.component';
-import { DiagramComponent } from './diagram/diagram.component';
+import { DiagramComponent } from './components/diagram/diagram.component';
 import { TreeComponent } from './components/tree/tree.component';
 import { LoadDialogComponent } from './components/LoadDialog/LoadDialog.component';
 import { ChooseBusbarDialogComponent } from './components/ChooseBusbarDialog/ChooseBusbarDialog.component';
+import { ErrorDialogComponent } from './components/error-dialog/error-dialog.component'
 import { environment } from '../environments/environment';
 import * as fromRoot from './store/reducers/index'; 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     NavComponent,
     DiagramComponent,
     TreeComponent,
     LoadDialogComponent,
-    ChooseBusbarDialogComponent
+    ChooseBusbarDialogComponent,
+    ErrorDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +71,8 @@ import * as fromRoot from './store/reducers/index';
   providers: [],
   entryComponents: [
     LoadDialogComponent,
-    ChooseBusbarDialogComponent
+    ChooseBusbarDialogComponent,
+    ErrorDialogComponent
   ],
   bootstrap: [
     AppComponent,

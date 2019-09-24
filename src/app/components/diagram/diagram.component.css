@@ -1,0 +1,50 @@
+
+rect { 
+  stroke: black;
+  stroke-width: 1px;
+}
+
+.node rect {
+    fill: #98C1D9;
+  }
+
+  .nodeBusbar rect {
+    fill: #EE6C4D;
+   
+  }
+
+  .nodeSupply rect {
+    fill: #E0FBFC;
+  }
+  
+  text { font: 12px sans-serif; }
+
+  .rootNode rect {
+    fill: none;
+    visibility: "hidden";
+    
+    stroke: white;
+  }
+  
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+  }
+
+  .rootLink {
+    fill: none;
+    visibility: "hidden";
+    pointer-events: none;
+  }
+
+  .pathLabel {
+    font-size: 25;
+    fill: #aaa;
+  }
+
+  .rootPathLabel {
+    fill: none;
+    visibility: "hidden";
+    pointer-events: none;
+  }
