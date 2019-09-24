@@ -1,11 +1,10 @@
-import {Component, Output, OnInit, ContentChildren, QueryList, EventEmitter} from '@angular/core';
-import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragExit} from '@angular/cdk/drag-drop';
+import {Component, OnInit} from '@angular/core';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import { MatTableDataSource, MatDialog } from '@angular/material';
 import clonedeep from 'lodash.clonedeep';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Store } from '@ngrx/store'
 import { Load } from "../../models/Load";
-import {LoadTypes} from "../../models/LoadTypes.enum"
 import {ChangeLoadState} from "../../store/actions/loads"
 import * as fromRoot from '../../store/reducers';
 import { LoadDialogComponent } from "../LoadDialog/LoadDialog.component"
@@ -17,7 +16,7 @@ import { ChooseBusbarDialogComponent } from "../ChooseBusbarDialog/ChooseBusbarD
   styleUrls: ['./tree.component.sass'],
 })
 export class TreeComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'name', 'area', 'loadType'];
+  displayedColumns: string[] = ['name', 'area', 'purpose', 'subPurpose', 'loadType'];
   notAllocatedDataSource =     new MatTableDataSource();
   allocatedDataSource =        new MatTableDataSource();
   supplyAllocatedDataSource =  new MatTableDataSource();
@@ -56,9 +55,21 @@ export class TreeComponent implements OnInit {
     });
   }
 
+  onChangeТotAllocatedLoadsFilter(value: string) {
+    this.notAllocatedDataSource.filter = value.trim().toLocaleLowerCase();
+  }
+
+  onChangeAllocatedLoadsFilter(value: string) {
+    this.allocatedDataSource.filter = value.trim().toLocaleLowerCase();
+  }
+
+  onChangeSupplyAllocatedLoadsFilter(value: string) {
+    this.supplyAllocatedDataSource.filter = value.trim().toLocaleLowerCase();
+  }
+
   ngOnInit() {}
 
-  updateTables() {
+  private updateTables() {
     this.notAllocatedDataSourceSubscription.unsubscribe()
     this.allocatedDataSourceSubscription.unsubscribe()
     this.supplyAllocatedDataSourceSubscription.unsubscribe();
