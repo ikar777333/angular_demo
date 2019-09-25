@@ -3,7 +3,6 @@ import { Load } from '../Load'
 export class Node {
     load: Load;
     children: Array<Node>;
-    parents: Array<Node>;
 
     constructor(data: Load) {
         this.load = data;

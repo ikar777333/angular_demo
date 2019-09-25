@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Error</h1>
 <div mat-dialog-content fxLayout="column" fxLayoutAlign="center">
-  
+  <a class="error-message">{{this.message}}</a>
 </div>
 <div mat-dialog-actions fxLayout="row" fxLayoutAlign="center center">
   <button mat-button color="primary" (click)="onClick()" cdkFocusInitial>Ok</button>

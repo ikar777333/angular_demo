@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material';
 import { Store } from '@ngrx/store'
 import { Load } from "../../models/Load";
 import { Node } from "../../models/diagram/Node";
-import { LoadTypes } from "../../models/LoadTypes.enum"
 import { ChangeLoadState } from "../../store/actions/loads"
 import * as fromRoot from '../../store/reducers';
 import { LoadDialogComponent } from "../LoadDialog/LoadDialog.component"
@@ -92,7 +91,6 @@ export class DiagramComponent implements OnInit {
 
     let supplyAllocatedNodes = this.supplyAllocatedLoads.map(function(element){return new Node(element)})
     let allocatedNodes = this.allocatedLoads.map(function(element){return new Node(element)})
-    console.log(allocatedNodes)
     allocatedNodes.forEach(busbar => {
       busbar.children = busbar.children.concat(supplyAllocatedNodes.filter(function(element){
         return element.load.$parentId === busbar.load.$id}
@@ -129,9 +127,6 @@ export class DiagramComponent implements OnInit {
       .attr("class", function(d) {return d.source.data.load ? "link" : "rootLink"})
       .attr("id", function(d,i){return 'path'+i})
       .attr("d", (d) => {
-        if(d.target.data.load.$isSupply && d.target.data.load.parentId !== null)
-          return this.getOrientationForLink(d, Orientation.BOTTOM_TO_TOP)
-        else 
           return this.getOrientationForLink(d, Orientation.TOP_TO_BOTTOM)
       })
       .attr('id', function(d,i) {return 'path'+i});
@@ -156,9 +151,6 @@ export class DiagramComponent implements OnInit {
   private updateLinks() {
     this.g.selectAll(".link")
     .attr("d", (d) => {
-      if(d.target.data.load.$isSupply && d.target.data.load.parentId !== null)
-        return this.getOrientationForLink(d, Orientation.BOTTOM_TO_TOP)
-      else 
         return this.getOrientationForLink(d, Orientation.TOP_TO_BOTTOM)
     })
   }
@@ -184,10 +176,7 @@ export class DiagramComponent implements OnInit {
         return " node"
       }})
     .attr("transform", (d) => { 
-      if(d.data.load && d.data.load.$isSupply) 
-        return this.getOrientationForNode(d, Orientation.BOTTOM_TO_TOP);
-      else 
-        return this.getOrientationForNode(d, Orientation.TOP_TO_BOTTOM);  
+      return this.getOrientationForNode(d, Orientation.TOP_TO_BOTTOM);  
     });
 
     node.append("rect")
@@ -212,9 +201,6 @@ export class DiagramComponent implements OnInit {
   private updateNodes() {
     this.g.selectAll([".node", ".nodeSupply"])
     .attr("transform", (d) => { 
-      if(d.data.load && d.data.load.$isSupply) 
-        return this.getOrientationForNode(d, Orientation.BOTTOM_TO_TOP);
-      else 
         return this.getOrientationForNode(d, Orientation.TOP_TO_BOTTOM);  
     });
   }
@@ -329,7 +315,7 @@ export class DiagramComponent implements OnInit {
   }
 
   private initDrugAndDrop() {
-    this.svg.selectAll(".node").call(d3.drag()
+    this.svg.selectAll([".node", ".nodeSupply"]).call(d3.drag()
     .on("start", (d: any) => {
       this.oldX = d.x;
       this.oldY = d.y;
