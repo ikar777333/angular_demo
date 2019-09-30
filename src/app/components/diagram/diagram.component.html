@@ -1,1 +1,8 @@
 <svg></svg>
+<div>
+    <mat-action-list>
+        <button *ngFor="let node of tree.descendants()" mat-list-item (click)="focus(node.data.load.$id)"> {{node.data.load ? node.data.load.$name : ""}} </button>
+    </mat-action-list>
+</div>
+
+

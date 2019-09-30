@@ -154,6 +154,8 @@ function updateLoad(load: Load, state: State) {
 function removeChildrenLoads(load: Load, state: State) {
   console.log("removeChildrenLoads")
   load.$childrenLoads.forEach(function(element){
+    if(element.$childrenLoads.length)
+      removeChildrenLoads(element, state);
     element.$parentId = null;
     state.notAllocatedLoads.push(element);
   })

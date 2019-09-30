@@ -45,14 +45,16 @@ class Tree {
 export class DiagramComponent implements OnInit {
 
   private margin = {top: 40, right: 0, bottom: 50, left: 0};
-  private width:     number;
-  private height:    number;
-  private oldX:      number;
-  private oldY:      number;
-  private svg:       any;
-  private g:         any;
-  private treemap:   any;
-  private tree:      Tree;
+  private width:      number;
+  private height:     number;
+  private treeWidth:  number;
+  private treeHeight: number;
+  private oldX:       number;
+  private oldY:       number;
+  private svg:        any;
+  private g:          any;
+  private treemap:    any;
+  private tree:       Tree;
   private allocatedLoads:       Array<Load>;
   private notAllocatedLoads:    Array<Load>;
   private supplyAllocatedLoads: Array<Load>;
@@ -73,7 +75,9 @@ export class DiagramComponent implements OnInit {
 
     this.width = 925 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
-    this.treemap = d3.tree().size([this.width, this.height / 2]);
+    this.treeWidth = this.width;
+    this.treeHeight = this.height;
+    this.treemap = d3.tree().size([this.treeWidth, this.treeHeight]);
   }
 
   ngOnInit() {
@@ -101,16 +105,22 @@ export class DiagramComponent implements OnInit {
     root.children = root.children.concat(this.notAllocatedLoads.map(function(element){return new Node(element)}));
     root = d3.hierarchy(root)
     root = this.treemap(root)
-
     this.tree = new Tree(root, rootTop);
+    this.updateTreeSize(this.tree)
+  }
+
+  private updateTreeSize(tree: Tree) {
+    let maxDepth = Math.max.apply(Math, tree.descendants().map(function(e) { return e.depth; }));
+    this.treeWidth = this.width + 200;
+    this.treeHeight = this.height + (maxDepth * (NODE_HEIGTH * 3))
+    this.treemap = d3.tree().size([this.treeWidth, this.treeHeight]);
   }
 
   private initSvg() {
     this.svg = d3.select("svg")
-      .attr("width", "100%")
+      .attr("width", this.width)
       .attr("height", this.height + this.margin.top + this.margin.bottom)
     this.g = this.svg.append("g")
-      .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
   }
 
   private initLinks() {
@@ -279,6 +289,7 @@ export class DiagramComponent implements OnInit {
     )
     this.store.dispatch(new ChangeLoadState({oldLoad: load, newLoad: newLoad}))
     d3.select(d3.event.target.attributes["href"].nodeValue).remove();
+    d.target.data.load = newLoad;
   }
 
   private updateDiagram() {
@@ -287,6 +298,23 @@ export class DiagramComponent implements OnInit {
     this.initNodes();
     this.initDrugAndDrop();
   }
+
+  focus(loadId: number) {
+    let node = this.tree.descendants().find(function(element) {
+      return element.data.load ? element.data.load.$id === loadId : false;
+    })
+
+    this.g
+    .attr("transform", "translate(" + () + "," + () + ")")
+    .attr("transform", "scale(" + 2 + "," + 2 + ")");
+  }
+
+  /*
+
+  213.462, 273.333
+  translate(-26.9911, -340.087) scale(2, 2);
+  
+  */
 
   private openLoadDialog(load: Load): void {
     const dialogRef = this.dialog.open(LoadDialogComponent, {
