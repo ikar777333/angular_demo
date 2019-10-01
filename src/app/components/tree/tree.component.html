@@ -1,79 +1,92 @@
 <br>
-<h2 class="title">Not Allocated Loads</h2>
-<mat-form-field>
-    <input matInput placeholder="Search" (keyup)="onChangeNotAllocatedLoadsFilter($event.target.value)">
-</mat-form-field>
-<mat-table [dataSource]="notAllocatedDataSource"
-  class="mat-elevation-z8" cdkDropList #table1 #list1="cdkDropList"
-  [cdkDropListData]="notAllocatedDataSource.data" [cdkDropListConnectedTo]="[list2 , list3]"
-  (cdkDropListDropped)="drop($event)" id="table1">
-    
-    <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
-    </ng-container>
-    
-    <ng-container matColumnDef="area">
-        <mat-header-cell *matHeaderCellDef> Area </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.area}} </mat-cell>
-    </ng-container>
+<mat-accordion>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                    Not Allocated Loads
+            </mat-panel-title>
+        </mat-expansion-panel-header>
 
-    <ng-container matColumnDef="purpose">
-        <mat-header-cell *matHeaderCellDef> Purpose </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.purpose}} </mat-cell>
-    </ng-container>
+        <mat-form-field>
+            <input matInput placeholder="Search" (keyup)="onChangeNotAllocatedLoadsFilter($event.target.value)">
+        </mat-form-field>
+        <mat-table [dataSource]="notAllocatedDataSource"
+        class="mat-elevation-z8" cdkDropList #table1 #list1="cdkDropList"
+        [cdkDropListData]="notAllocatedDataSource.data" [cdkDropListConnectedTo]="[list2 , list3]"
+        (cdkDropListDropped)="drop($event)" id="table1">
+            
+            <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+            </ng-container>
+            
+            <ng-container matColumnDef="area">
+                <mat-header-cell *matHeaderCellDef> Area </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.area}} </mat-cell>
+            </ng-container>
 
-    <ng-container matColumnDef="subPurpose">
-        <mat-header-cell *matHeaderCellDef> Subpurpose </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.subPurpose}} </mat-cell>
-    </ng-container>
+            <ng-container matColumnDef="purpose">
+                <mat-header-cell *matHeaderCellDef> Purpose </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.purpose}} </mat-cell>
+            </ng-container>
 
-    <ng-container matColumnDef="loadType">
-      <mat-header-cell *matHeaderCellDef> Load Type </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.loadType}} </mat-cell>
-    </ng-container>
+            <ng-container matColumnDef="subPurpose">
+                <mat-header-cell *matHeaderCellDef> Subpurpose </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.subPurpose}} </mat-cell>
+            </ng-container>
 
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row (click)="openLoadDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
-</mat-table>
+            <ng-container matColumnDef="loadType">
+            <mat-header-cell *matHeaderCellDef> Load Type </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.loadType}} </mat-cell>
+            </ng-container>
 
-<br>
-<h2 class="title">Allocated Loads</h2>
-<mat-form-field >
-    <input matInput placeholder="Search" (keyup)="onChangeAllocatedLoadsFilter($event.target.value)">
-</mat-form-field>
-<mat-table [dataSource]="allocatedDataSource" class="mat-elevation-z8"
-  cdkDropList #table2 #list2="cdkDropList" [cdkDropListData]="allocatedDataSource.data"
-  [cdkDropListConnectedTo]="[list1, list3]" (cdkDropListDropped)="drop($event)" id="table2">
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row (click)="openLoadDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
+        </mat-table>
+    </mat-expansion-panel>
 
-  <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
-  </ng-container>
-  
-  <ng-container matColumnDef="area">
-      <mat-header-cell *matHeaderCellDef> Area </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.area}} </mat-cell>
-  </ng-container>
+    <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                        Allocated Loads
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+        <mat-form-field >
+            <input matInput placeholder="Search" (keyup)="onChangeAllocatedLoadsFilter($event.target.value)">
+        </mat-form-field>
+        <mat-table [dataSource]="allocatedDataSource" class="mat-elevation-z8"
+        cdkDropList #table2 #list2="cdkDropList" [cdkDropListData]="allocatedDataSource.data"
+        [cdkDropListConnectedTo]="[list1, list3]" (cdkDropListDropped)="drop($event)" id="table2">
 
-  <ng-container matColumnDef="purpose">
-      <mat-header-cell *matHeaderCellDef> Purpose </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.purpose}} </mat-cell>
-  </ng-container>
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+        </ng-container>
+        
+        <ng-container matColumnDef="area">
+            <mat-header-cell *matHeaderCellDef> Area </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.area}} </mat-cell>
+        </ng-container>
 
-  <ng-container matColumnDef="subPurpose">
-      <mat-header-cell *matHeaderCellDef> Subpurpose </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.subPurpose}} </mat-cell>
-  </ng-container>
+        <ng-container matColumnDef="purpose">
+            <mat-header-cell *matHeaderCellDef> Purpose </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.purpose}} </mat-cell>
+        </ng-container>
 
-  <ng-container matColumnDef="loadType">
-    <mat-header-cell *matHeaderCellDef> Load Type </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.loadType}} </mat-cell>
-  </ng-container>
+        <ng-container matColumnDef="subPurpose">
+            <mat-header-cell *matHeaderCellDef> Subpurpose </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.subPurpose}} </mat-cell>
+        </ng-container>
 
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row (click)="openLoadDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
-</mat-table>
+        <ng-container matColumnDef="loadType">
+            <mat-header-cell *matHeaderCellDef> Load Type </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.loadType}} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row (click)="openLoadDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
+        </mat-table>
+    </mat-expansion-panel>
 
 <br>
 <h2 class="title">Supply Allocated Loads</h2>
@@ -112,3 +125,4 @@
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row (click)="openLoadDialog(row)" *matRowDef="let row; columns: displayedColumns;" cdkDrag></mat-row>
 </mat-table>
+</mat-accordion>

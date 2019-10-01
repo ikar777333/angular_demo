@@ -55,6 +55,7 @@ export class DiagramComponent implements OnInit {
   private g:          any;
   private treemap:    any;
   private tree:       Tree;
+  private nodesForSerch: Array<any>;
   private allocatedLoads:       Array<Load>;
   private notAllocatedLoads:    Array<Load>;
   private supplyAllocatedLoads: Array<Load>;
@@ -73,11 +74,11 @@ export class DiagramComponent implements OnInit {
       this.supplyAllocatedLoads = data}
     );
 
-    this.width = 925 - this.margin.left - this.margin.right;
-    this.height = 500 - this.margin.top - this.margin.bottom;
-    this.treeWidth = this.width;
+    this.width =      925 - this.margin.left - this.margin.right;
+    this.height =     500 - this.margin.top - this.margin.bottom;
+    this.treeWidth =  this.width;
     this.treeHeight = this.height;
-    this.treemap = d3.tree().size([this.treeWidth, this.treeHeight]);
+    this.treemap =    d3.tree().size([this.treeWidth, this.treeHeight]);
   }
 
   ngOnInit() {
@@ -107,13 +108,14 @@ export class DiagramComponent implements OnInit {
     root = this.treemap(root)
     this.tree = new Tree(root, rootTop);
     this.updateTreeSize(this.tree)
+    this.searchLoad("");
   }
 
   private updateTreeSize(tree: Tree) {
-    let maxDepth = Math.max.apply(Math, tree.descendants().map(function(e) { return e.depth; }));
-    this.treeWidth = this.width + 200;
+    let maxDepth =    Math.max.apply(Math, tree.descendants().map(function(e) { return e.depth; }));
+    this.treeWidth =  this.width + 200;
     this.treeHeight = this.height + (maxDepth * (NODE_HEIGTH * 3))
-    this.treemap = d3.tree().size([this.treeWidth, this.treeHeight]);
+    this.treemap =    d3.tree().size([this.treeWidth, this.treeHeight]);
   }
 
   private initSvg() {
@@ -146,8 +148,8 @@ export class DiagramComponent implements OnInit {
       .enter()
       .append('text')
       .attr("class", function(d) {return d.source.data.load ? "pathLabel" : "rootPathLabel"})
-      .attr("id", function(d,i){return 'pathLabel'+i})
-      .attr("dx", 25)
+      .attr("id", function(d,i){return 'pathLabel'+ i})
+      .attr("dx", 40)
       .attr("dy", 0)
   
     pathlabels.append('textPath')
@@ -227,7 +229,7 @@ export class DiagramComponent implements OnInit {
       }
       case Orientation.BOTTOM_TO_TOP: {
         x = d.x;
-        y = this.height/2 - (d.y - (-NODE_HEIGTH*3));
+        y = this.height / 2 - (d.y - (-NODE_HEIGTH*3));
         break;
       }
       default: {
@@ -299,22 +301,22 @@ export class DiagramComponent implements OnInit {
     this.initDrugAndDrop();
   }
 
-  focus(loadId: number) {
+  private getNodesForSerch() {
+    return this.nodesForSerch;
+  }
+
+  private focus(loadId: number) {
     let node = this.tree.descendants().find(function(element) {
       return element.data.load ? element.data.load.$id === loadId : false;
     })
-
-    this.g
-    .attr("transform", "translate(" + () + "," + () + ")")
-    .attr("transform", "scale(" + 2 + "," + 2 + ")");
+    this.g.attr("transform", "translate(" + -(node.x - 420) + "," + -(node.y - 250) + ")")
   }
 
-  /*
-
-  213.462, 273.333
-  translate(-26.9911, -340.087) scale(2, 2);
-  
-  */
+  private searchLoad(value: string) {
+    this.nodesForSerch = this.tree.descendants().filter(function(element) {
+      return  element.data.load && element.data.load.$name.includes(value);
+    })
+  }
 
   private openLoadDialog(load: Load): void {
     const dialogRef = this.dialog.open(LoadDialogComponent, {

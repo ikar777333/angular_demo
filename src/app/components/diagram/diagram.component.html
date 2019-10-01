@@ -1,8 +1,18 @@
-<svg></svg>
-<div>
-    <mat-action-list>
-        <button *ngFor="let node of tree.descendants()" mat-list-item (click)="focus(node.data.load.$id)"> {{node.data.load ? node.data.load.$name : ""}} </button>
-    </mat-action-list>
-</div>
+<mat-grid-list cols="4" row="1" rowHeight="1000px">
+    <mat-grid-tile [colspan]="3">
+        <svg></svg>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="1">
+        <div>
+            <mat-form-field>
+                <input matInput placeholder="Search" (keyup)="searchLoad($event.target.value)">
+            </mat-form-field>
+            <mat-action-list>
+                <button *ngFor="let node of getNodesForSerch()" 
+                mat-list-item (click)="focus(node.data.load.$id)"> {{node.data.load.$name}} </button>
+            </mat-action-list>
+        </div>
+    </mat-grid-tile>
+</mat-grid-list>
 
 
